@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Globalization;
 
 namespace Retire
 {
@@ -31,6 +33,19 @@ namespace Retire
 				}
 			}
 			return total;
+		}
+
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+			sb.AppendLine($"{this.Title}");
+			for (int ii=1; ii <= 12; ++ii)
+			{
+				var month = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(ii); // .GetMonthName(ii);
+				sb.AppendLine($"{month,6}: {MonthlyTotal(ii),10:C2}");
+			}
+			sb.AppendLine($"{"Total",6}: {Total,10:C2}");
+			return sb.ToString();
 		}
 	}
 }
