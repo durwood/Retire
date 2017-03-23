@@ -69,4 +69,22 @@ namespace Retire
 			return month % 2 == 1;
 		}
 	}
+
+	public class BudgetEntrySpecificMonths : BudgetEntry
+	{
+		public double Amount { get; private set; }
+		public int Month { get; private set; }
+
+		public BudgetEntrySpecificMonths(double amount, int month, string label, string category, string subCategory)
+			: base(amount, label, category, subCategory)
+		{
+			this.Amount = amount;
+			this.Month = month;
+		}
+
+		public override double GetMonthEntry(int month)
+		{
+			return month == Month ? Amount : 0.0;
+		}
+	}
 }

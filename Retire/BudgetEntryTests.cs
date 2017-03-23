@@ -55,5 +55,15 @@ namespace Retire
 			Assert.That(_budget.MonthlyTotal(2), Is.EqualTo(0.00));
 		}
 
+		[Test]
+		public void CanSupportSingleMonthBudgetEntries()
+		{
+			var _singleMonthEntry = new BudgetEntrySpecificMonths(900.00, 1, "Mariners", "Entertainment", "SportingEvents");
+			_budget.AddEntry(_singleMonthEntry);
+			Assert.That(_budget.Total, Is.EqualTo(900.00));
+			Assert.That(_budget.MonthlyTotal(1), Is.EqualTo(900.00));
+			Assert.That(_budget.MonthlyTotal(2), Is.EqualTo(0.0));
+		}
+
 	}
 }

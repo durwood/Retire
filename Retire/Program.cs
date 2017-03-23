@@ -17,6 +17,7 @@ namespace Retire
 			budget.AddEntry(new BudgetEntryMonthly(  90.00, "PSE", "Utilities", "NaturalGas"));
 			budget.AddEntry(new BudgetEntryBiMonthly(190.00, 1, "SPU", "Utilities", "WaterSewerWaste"));
 			budget.AddEntry(new BudgetEntryBiMonthly(80.00, 1, "SCL", "Utilities", "Electricity"));
+			budget.AddEntry(new BudgetEntrySpecificMonths(900.00, 1, "Mariners", "Entertainment", "SportingEvents"));
 
 			Console.WriteLine(budget);
 		}
