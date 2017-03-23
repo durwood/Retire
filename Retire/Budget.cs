@@ -18,5 +18,11 @@ namespace Retire
 			this.budgetEntry = budgetEntry;
 			Total = Total + budgetEntry.AnnualizedAmount;
 		}
+
+		public double MonthlyTotal(int month)
+		{
+			BudgetEntryMonthly monthlyEntry = budgetEntry as BudgetEntryMonthly;
+			return monthlyEntry == null ? 0.0 : monthlyEntry.Amount;
+		}
 	}
 }
