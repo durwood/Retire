@@ -10,29 +10,29 @@ namespace Retire
 		public string Title { get; private set; }
 		public double Total { get; private set; }
 		List<BudgetEntry> _budgetEntries = new List<BudgetEntry>();
+		Dictionary<int, double> _monthlyTotals = new Dictionary<int, double>();
 
 		public Budget(string title)
 		{
 			this.Title = title;
+			for (int ii = 1; ii <= 12; ++ii)
+				_monthlyTotals.Add(ii, 0.0);
 		}
 
 		public void AddEntry(BudgetEntry budgetEntry)
 		{
 			_budgetEntries.Add(budgetEntry);
-			Total = Total + budgetEntry.AnnualizedAmount;
+			for (int ii = 1; ii <= 12; ++ii)
+			{
+				var monthlyEntry = budgetEntry.GetMonthEntry(ii);
+				_monthlyTotals[ii] += monthlyEntry;
+				Total += monthlyEntry;
+			}
 		}
 
 		public double MonthlyTotal(int month)
 		{
-			double total = 0.0;
-			foreach (var entry in _budgetEntries)
-			{
-				if (entry is BudgetEntryMonthly)
-				{
-					total += ((BudgetEntryMonthly)entry).Amount;
-				}
-			}
-			return total;
+			return _monthlyTotals[month];
 		}
 
 		public override string ToString()

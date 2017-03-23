@@ -44,5 +44,16 @@ namespace Retire
 			Assert.That(_budget.MonthlyTotal(3), Is.EqualTo(30.00 + 25.00));
 		}
 
+		[Test]
+		public void CanSupportBiMonthlyBudgetEntries()
+		{
+			var _biMonthlyEntry = new BudgetEntryBiMonthly(40.00, 1, "Water Bill", "Utility", "Water");
+
+			_budget.AddEntry(_biMonthlyEntry);
+			Assert.That(_budget.Total, Is.EqualTo(40.00 * 6));
+			Assert.That(_budget.MonthlyTotal(1), Is.EqualTo(40.00));
+			Assert.That(_budget.MonthlyTotal(2), Is.EqualTo(0.00));
+		}
+
 	}
 }
