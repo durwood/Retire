@@ -7,16 +7,20 @@ namespace Retire
 {
 	class Budget
 	{
-		public string Title { get; private set; }
+		public string Title { get; set; }
 		public double Total { get; private set; }
 		List<BudgetEntry> _budgetEntries = new List<BudgetEntry>();
 		Dictionary<int, double> _monthlyTotals = new Dictionary<int, double>();
 
-		public Budget(string title)
+		public Budget()
 		{
-			this.Title = title;
 			for (int ii = 1; ii <= 12; ++ii)
 				_monthlyTotals.Add(ii, 0.0);
+		}
+
+		public Budget(string title) : this()
+		{
+			Title = title;
 		}
 
 		public void AddEntry(BudgetEntry budgetEntry)

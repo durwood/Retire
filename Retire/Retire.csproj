@@ -40,6 +40,9 @@
     <Compile Include="BudgetEntry.cs" />
     <Compile Include="BudgetEntryTests.cs" />
     <Compile Include="Budget.cs" />
+    <Compile Include="BudgetCategoryTests.cs" />
+    <Compile Include="BudgetCategory.cs" />
+    <Compile Include="BudgetFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

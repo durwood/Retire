@@ -7,16 +7,14 @@ namespace Retire
 	public abstract class BudgetEntry
 	{
 		public string Label { get; private set; }
-		public string Category { get; private set; }
-		public string SubCategory { get; private set; }
+		public BudgetCategory Category { get; private set; }
 		private double _amount;
 
-		public BudgetEntry(double amount, string label, string category, string subCategory)
+		public BudgetEntry(double amount, string label, BudgetType budgetType)
 		{
 			_amount = amount;
 			this.Label = label;
-			this.Category = category;
-			this.SubCategory = subCategory;
+			this.Category = BudgetCategoryFactory.GetBudgetCategory(budgetType);
 		}
 
 		public double GetMonthEntry(int month)
@@ -32,8 +30,8 @@ namespace Retire
 
 	public class BudgetEntryMonthly : BudgetEntry
 	{
-		public BudgetEntryMonthly(double amount, string label, string category, string subCategory)
-			: base(amount, label, category, subCategory)
+		public BudgetEntryMonthly(double amount, string label, BudgetType budgetType)
+			: base(amount, label, budgetType)
 		{
 		}
 	}
@@ -42,8 +40,8 @@ namespace Retire
 	{
 		public bool Odd { get; private set; }
 
-		public BudgetEntryBiMonthly(double amount, int month, string label, string category, string subCategory)
-			: base(amount, label, category, subCategory)
+		public BudgetEntryBiMonthly(double amount, int month, string label, BudgetType budgetType)
+			: base(amount, label, budgetType)
 		{
 			this.Odd = IsOdd(month);
 		}
@@ -59,12 +57,12 @@ namespace Retire
 		}
 	}
 
-	public class BudgetEntrySingleMonth : BudgetEntry
+	public class BudgetEntryAnnual : BudgetEntry
 	{
 		private int _month;
 
-		public BudgetEntrySingleMonth(double amount, int month, string label, string category, string subCategory)
-			: base(amount, label, category, subCategory)
+		public BudgetEntryAnnual(double amount, int month, string label, BudgetType budgetType)
+			: base(amount, label, budgetType)
 		{
 			_month = month;
 		}
@@ -79,8 +77,8 @@ namespace Retire
 	{
 		private int _month;
 
-		public BudgetEntryBiAnnual(double amount, int month, string label, string category, string subCategory)
-			: base(amount, label, category, subCategory)
+		public BudgetEntryBiAnnual(double amount, int month, string label, BudgetType budgetType)
+			: base(amount, label, budgetType)
 		{
 			if (month > 6)
 				month -= 6;
