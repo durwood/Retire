@@ -32,5 +32,17 @@ namespace Retire
 			Assert.That(_budget.MonthlyTotal(12), Is.EqualTo(30.00));
 		}
 
+		[Test]
+		public void CanSupportMultipleBudgetEntries()
+		{
+			BudgetEntryMonthly anotherMonthly = new BudgetEntryMonthly(25.00, "Water Bill", "Utility", "Water");
+
+			_budget.AddEntry(_monthlyEntry);
+			_budget.AddEntry(anotherMonthly);
+			Assert.That(_budget.Title, Is.EqualTo("TestBudget"));
+			Assert.That(_budget.Total, Is.EqualTo((30.00 + 25.00) * 12));
+			Assert.That(_budget.MonthlyTotal(3), Is.EqualTo(30.00 + 25.00));
+		}
+
 	}
 }

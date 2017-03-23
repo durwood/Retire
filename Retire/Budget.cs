@@ -1,12 +1,13 @@
 using System;
+using System.Collections.Generic;
 
 namespace Retire
 {
 	class Budget
 	{
 		public string Title { get; private set; }
-		BudgetEntry budgetEntry;
 		public double Total { get; private set; }
+		List<BudgetEntry> _budgetEntries = new List<BudgetEntry>();
 
 		public Budget(string title)
 		{
@@ -15,14 +16,21 @@ namespace Retire
 
 		public void AddEntry(BudgetEntry budgetEntry)
 		{
-			this.budgetEntry = budgetEntry;
+			_budgetEntries.Add(budgetEntry);
 			Total = Total + budgetEntry.AnnualizedAmount;
 		}
 
 		public double MonthlyTotal(int month)
 		{
-			BudgetEntryMonthly monthlyEntry = budgetEntry as BudgetEntryMonthly;
-			return monthlyEntry == null ? 0.0 : monthlyEntry.Amount;
+			double total = 0.0;
+			foreach (var entry in _budgetEntries)
+			{
+				if (entry is BudgetEntryMonthly)
+				{
+					total += ((BudgetEntryMonthly)entry).Amount;
+				}
+			}
+			return total;
 		}
 	}
 }
