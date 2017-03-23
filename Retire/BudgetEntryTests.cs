@@ -58,7 +58,7 @@ namespace Retire
 		[Test]
 		public void CanSupportSingleMonthBudgetEntries()
 		{
-			var _singleMonthEntry = new BudgetEntrySpecificMonths(900.00, 1, "Mariners", "Entertainment", "SportingEvents");
+			var _singleMonthEntry = new BudgetEntrySingleMonth(900.00, 1, "Mariners", "Entertainment", "SportingEvents");
 			_budget.AddEntry(_singleMonthEntry);
 			Assert.That(_budget.Total, Is.EqualTo(900.00));
 			Assert.That(_budget.MonthlyTotal(1), Is.EqualTo(900.00));
@@ -66,14 +66,19 @@ namespace Retire
 		}
 
 		[Test]
-		public void CanSupportSpecificMonthBudgetEntries()
+		public void CanSupportBiAnnualBudgetEntries()
 		{
-			var _specificMonthsEntry = new BudgetEntrySpecificMonths("Progressive BMW", "Insurance", "Auto", 300, 5, 11);
-			_budget.AddEntry(_specificMonthsEntry);
+			var entry1 = new BudgetEntryBiAnnual(300, 5, "Progressive BMW", "Insurance", "Auto");
+			var entry2 = new BudgetEntryBiAnnual(100, 12, "Foo", "Bar", "Foobar");
+			_budget.AddEntry(entry1);
 			Assert.That(_budget.Total, Is.EqualTo(600.00));
 			Assert.That(_budget.MonthlyTotal(5), Is.EqualTo(300.00));
 			Assert.That(_budget.MonthlyTotal(11), Is.EqualTo(300.0));
 			Assert.That(_budget.MonthlyTotal(12), Is.EqualTo(0.0));
+			_budget.AddEntry(entry2);
+			Assert.That(_budget.MonthlyTotal(6), Is.EqualTo(100.0));
+			Assert.That(_budget.MonthlyTotal(12), Is.EqualTo(100.0));
+			Assert.That(_budget.MonthlyTotal(1), Is.EqualTo(0.0));
 		}
 	}
 }

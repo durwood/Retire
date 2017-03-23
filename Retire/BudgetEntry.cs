@@ -69,31 +69,52 @@ namespace Retire
 		}
 	}
 
-	public class BudgetEntrySpecificMonths : BudgetEntry
+	public class BudgetEntrySingleMonth : BudgetEntry
 	{
-		public double Amount { get; private set; }
-		public int Month { get; private set; }
-		private HashSet<int> _months = new HashSet<int>();
+		private double _amount;
+		private int _month;
 
-		public BudgetEntrySpecificMonths(double amount, int month, string label, string category, string subCategory)
+		public BudgetEntrySingleMonth(double amount, int month, string label, string category, string subCategory)
 			: base(label, category, subCategory)
 		{
-			this.Amount = amount;
-			_months.Add(month);
+			_amount = amount;
+			_month = month;
 		}
 
-		public BudgetEntrySpecificMonths(string label, string category, string subCategory, double amount, params int[] months) 
+
+		public override double GetMonthEntry(int month)
+		{
+			return ValidMonth(month) ? _amount : 0.0;
+		}
+
+		protected override bool ValidMonth(int month)
+		{
+			return base.ValidMonth(month) && month == _month;
+		}
+	}
+
+	public class BudgetEntryBiAnnual : BudgetEntry
+	{
+		private double _amount;
+		private int _month;
+
+		public BudgetEntryBiAnnual(double amount, int month, string label, string category, string subCategory)
 			: base(label, category, subCategory)
 		{
-			Amount = amount;
-			foreach (var month in months)
-				if (ValidMonth(month))
-					_months.Add(month);
+			if (month > 6)
+				month -= 6;
+			_month = month;
+			_amount = amount;
 		}
 
 		public override double GetMonthEntry(int month)
 		{
-			return _months.Contains(month) ? Amount : 0.0;
+			return ValidMonth(month) ? _amount : 0.0;
+		}
+
+		protected override bool ValidMonth(int month)
+		{
+			return base.ValidMonth(month) && (month == _month || month == _month + 6);
 		}
 	}
 }
