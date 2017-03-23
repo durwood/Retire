@@ -1,18 +1,17 @@
 using System;
+using System.Collections.Generic;
 
 namespace Retire
 {
 
 	public abstract class BudgetEntry
 	{
-		public double AnnualizedAmount { get; private set; }
 		public string Label { get; private set; }
 		public string Category { get; private set; }
 		public string SubCategory { get; private set; }
 
-		public BudgetEntry(double amount, string label, string category, string subCategory)
+		public BudgetEntry(string label, string category, string subCategory)
 		{
-			this.AnnualizedAmount = amount;
 			this.Label = label;
 			this.Category = category;
 			this.SubCategory = subCategory;
@@ -31,7 +30,7 @@ namespace Retire
 		public double Amount { get; private set; }
 
 		public BudgetEntryMonthly(double amount, string label, string category, string subCategory)
-			: base(amount * 12, label, category, subCategory)
+			: base(label, category, subCategory)
 		{
 			this.Amount = amount;
 		}
@@ -48,7 +47,7 @@ namespace Retire
 		public bool Odd { get; private set; }
 
 		public BudgetEntryBiMonthly(double amount, int month, string label, string category, string subCategory)
-			: base(amount * 6, label, category, subCategory)
+			: base(label, category, subCategory)
 		{
 			this.Amount = amount;
 			this.Odd = IsOdd(month);
@@ -74,17 +73,27 @@ namespace Retire
 	{
 		public double Amount { get; private set; }
 		public int Month { get; private set; }
+		private HashSet<int> _months = new HashSet<int>();
 
 		public BudgetEntrySpecificMonths(double amount, int month, string label, string category, string subCategory)
-			: base(amount, label, category, subCategory)
+			: base(label, category, subCategory)
 		{
 			this.Amount = amount;
-			this.Month = month;
+			_months.Add(month);
+		}
+
+		public BudgetEntrySpecificMonths(string label, string category, string subCategory, double amount, params int[] months) 
+			: base(label, category, subCategory)
+		{
+			Amount = amount;
+			foreach (var month in months)
+				if (ValidMonth(month))
+					_months.Add(month);
 		}
 
 		public override double GetMonthEntry(int month)
 		{
-			return month == Month ? Amount : 0.0;
+			return _months.Contains(month) ? Amount : 0.0;
 		}
 	}
 }
