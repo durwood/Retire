@@ -43,6 +43,8 @@
     <Compile Include="BudgetCategoryTests.cs" />
     <Compile Include="BudgetCategory.cs" />
     <Compile Include="BudgetFactory.cs" />
+    <Compile Include="Report.cs" />
+    <Compile Include="ReportGenerationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

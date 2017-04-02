@@ -8,6 +8,15 @@ namespace Retire
 		{
 			var budget = CreateBudget("2017 Budget");
 			Console.WriteLine(budget);
+
+			Console.Write("Enter month for Report: ");
+			var input = Console.ReadLine();
+
+			int month;
+			if (int.TryParse(input, out month))
+			{
+				Console.WriteLine($"Generating report for month {month}");
+			}
 		}
 
 		public static Budget CreateBudget(string title)
@@ -19,7 +28,8 @@ namespace Retire
 			BudgetFactory.CreateBiMonthly(BudgetType.Utilities_Electricity, "SCL", 80.00, 1);
 
 			BudgetFactory.CreateBiAnnual(BudgetType.Auto_Insurance, "BMW", 337.00, 4);
-			BudgetFactory.CreateAnnual(BudgetType.Auto_Insurance, "Vespa", 366.00, 4);
+			BudgetFactory.CreateBiAnnual(BudgetType.Auto_Insurance, "BMW", 337.00, 10);
+			BudgetFactory.CreateAnnual(BudgetType.Auto_Insurance, "Vespa", 389.00, 4);
 			BudgetFactory.CreateMonthly(BudgetType.Auto_Gas, "Gas", 60.00);
 
 			BudgetFactory.CreateMonthly(BudgetType.Medical_Insurance, "Regence", 749.00);
@@ -46,6 +56,10 @@ namespace Retire
 			var budget = BudgetFactory.GetBudget();
 			budget.Title = title;
 			return budget;
+		}
+
+		public static void DoMonthlyReport(int month)
+		{
 		}
 	}
 }
