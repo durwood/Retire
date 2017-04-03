@@ -82,7 +82,7 @@ namespace Retire
 			foreach (var kvp in _budgetCategory)
 			{
 				var category = kvp.Value;
-				if (category.MainCategory == "Income" && !string.IsNullOrWhiteSpace(category.SubCategory))
+				if (category.MainCategory == "Income")
 					incomeCategories.Add(kvp.Value.SubCategory);
 			}
 			return incomeCategories;

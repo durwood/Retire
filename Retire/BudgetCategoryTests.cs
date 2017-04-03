@@ -48,7 +48,7 @@ namespace Retire
 			foreach (BudgetType budgetType in Enum.GetValues(typeof(BudgetType)))
 			{
 				var components = budgetType.ToString().Split('_');
-				if (components.Length == 2 && components[0] == "Income")
+				if (components[0] == "Income")
 					numCategories += 1;
 			}
 			var mainCategories = BudgetCategoryFactory.GetIncomeCategories();
