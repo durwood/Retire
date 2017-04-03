@@ -26,6 +26,20 @@ namespace Retire
 			Assert.That(category.MainCategory, Is.EqualTo("Utilities"));
 			Assert.That(category.SubCategory, Is.EqualTo(""));
 		}
+
+		[Test]
+		public void ExpenseCategoriesContainParentCategories()
+		{
+			int numParents = 0;
+			foreach (BudgetType budgetType in Enum.GetValues(typeof(BudgetType)))
+			{
+				var components = budgetType.ToString().Split('_');
+				if (components.Length == 1 && components[0] != "Income")
+					numParents += 1;
+			}
+			var mainCategories = BudgetCategoryFactory.GetExpenseCategories();
+			Assert.That(mainCategories.Count, Is.EqualTo(numParents));
+		}
 	}
 	
 }

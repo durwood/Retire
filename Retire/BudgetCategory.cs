@@ -17,6 +17,11 @@ namespace Retire
 		Entertainment_SportingEvents,
 		Home,
 		Home_Mortgage,
+		Income,
+		Income_Airbnb,
+		Income_Unemployment,
+		Income_Salary,
+		Income_Misc,
 		Medical,
 		Medical_Insurance,
 		Shopping,
@@ -57,6 +62,18 @@ namespace Retire
 		public static BudgetCategory GetBudgetCategory(BudgetType budgetType)
 		{
 			return _budgetCategory[budgetType];
+		}
+
+		public static ICollection<string> GetExpenseCategories()
+		{
+			var mainCategories = new HashSet<string>();
+			foreach (var kvp in _budgetCategory)
+			{
+				var mainCategory = kvp.Value.MainCategory;
+				if (mainCategory != "Income")
+				   	mainCategories.Add(kvp.Value.MainCategory);
+			}
+			return mainCategories;
 		}
 
 		static BudgetCategoryFactory()
