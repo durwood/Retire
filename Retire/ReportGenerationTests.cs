@@ -51,6 +51,21 @@ namespace Retire
 			Assert.That(report.Count, Is.EqualTo(1));
 			Assert.That(report[BudgetType.Auto.ToString()], Is.EqualTo(200.00));
 		}
+
+		[Test]
+		public void CanSerializeReport()
+		{
+			_report.AddExpenditure(BudgetType.Auto_Gas, 80.00);
+			_report.AddExpenditure(BudgetType.Auto, 20.00);
+			_report.AddExpenditure(BudgetType.Income_Salary, 300.00);
+			var savedReport = _report.Serialize();
+			Console.WriteLine(savedReport);
+			Report report = Report.DeSerialize(savedReport);
+			Assert.That(report.Month, Is.EqualTo(_report.Month));
+			var entries = report.GetReport();
+			Assert.That(entries["Auto"], Is.EqualTo(100.00));
+			Assert.That(entries["Income"], Is.EqualTo(300.00));
+		}
 	}
 
 }

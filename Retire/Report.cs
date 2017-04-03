@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace Retire
 {
@@ -34,5 +36,54 @@ namespace Retire
 			}
 			return report;
 		}
-	}
+
+		internal string Serialize()
+		{
+			var sb = new StringBuilder();
+			sb.AppendLine(Month.ToString());
+			foreach (var kvp in GetReport())
+			{
+				if (Math.Abs(kvp.Value) > 0.005)
+				{
+					var amount = kvp.Value.ToString();
+					sb.AppendLine($"{kvp.Key} {amount}");
+				}
+			}
+				
+			return sb.ToString();;
+		}
+
+		public static Report DeSerialize(string savedReport)
+		{
+			Report report = null;
+			int month = 0;
+			using (StringReader reader = new StringReader(savedReport))
+			{
+				string line = string.Empty;
+				do
+				{
+					line = reader.ReadLine();
+					if (line != null)
+					{
+						if (month == 0)
+						{
+							month = int.Parse(line);
+							report = new Report(month);
+						}
+						else
+						{
+							var components = line.Split(' ');
+							var budgetType = BudgetCategoryFactory.DeSerialize(components[0]);
+							var amount = double.Parse(components[1]);
+							report.AddExpenditure(budgetType, amount);
+						}
+						// do something with the line
+					}
+
+				} while (line != null);
+			}
+
+			return report;
+		}
+}
 }
