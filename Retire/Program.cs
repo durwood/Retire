@@ -70,16 +70,18 @@ namespace Retire
 			}
 		}
 
+		static string _prompt = "> ";
+
 		private static int GetMonth()
 		{
 			int month;
-			Console.Write("Enter integer value for month: ");
+			Console.Write($"Enter integer value for month{_prompt}");
 			do
 			{
 				var input = Console.ReadLine();
 				if (int.TryParse(input, out month) && month > 0 && month < 13)
 					break;
-				Console.WriteLine($"Invalid Month. Try again> ");
+				Console.Write($"Invalid Month. Try again{_prompt}");
 			} while (true);
 			return month;
 		}
@@ -87,7 +89,7 @@ namespace Retire
 		private static double GetPromptedAmount(string prompt)
 		{
 			double amount = 0.0;
-			Console.Write(prompt);
+			Console.Write($"{prompt}{_prompt}");
 			do
 			{
 				var input = Console.ReadLine();
@@ -95,7 +97,7 @@ namespace Retire
 					break;
 				if (double.TryParse(input, out amount))
 					break;
-				Console.WriteLine($"Invalid Input. Try again> ");
+				Console.Write($"Invalid Input. Try again{_prompt}");
 			} while (true);
 			return amount;
 		}
