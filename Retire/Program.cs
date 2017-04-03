@@ -55,6 +55,20 @@ namespace Retire
 		{
 			var month = GetMonth();
 			var report = new Report(month);
+
+			AddIncome(report);
+			AddExpenses(report);
+
+			foreach (var reportEntry in report.GetReport())
+			{
+				Console.WriteLine(reportEntry.ToString());
+			}
+		}
+
+		static string _prompt = "> ";
+
+		private static void AddIncome(Report report)
+		{
 			Console.WriteLine("When prompted, enter income...");
 			var incomeCategories = BudgetCategoryFactory.GetIncomeCategories();
 			foreach (var category in incomeCategories)
@@ -64,13 +78,19 @@ namespace Retire
 				var budgetType = BudgetCategoryFactory.GetBudgetType("Income", category);
 				report.AddExpenditure(budgetType, amount);
 			}
-			foreach (var reportEntry in report.GetReport())
-			{
-				Console.WriteLine(reportEntry.ToString());
-			}
 		}
 
-		static string _prompt = "> ";
+		private static void AddExpenses(Report report)
+		{
+			Console.WriteLine("When prompted, enter aggregated expenses...");
+			var expenseCategories = BudgetCategoryFactory.GetExpenseCategories();
+			foreach (var category in expenseCategories)
+			{
+				var amount = GetPromptedAmount(category);
+				var budgetType = BudgetCategoryFactory.GetBudgetType(category, "");
+				report.AddExpenditure(budgetType, amount);
+			}
+		}
 
 		private static int GetMonth()
 		{
@@ -89,15 +109,16 @@ namespace Retire
 		private static double GetPromptedAmount(string prompt)
 		{
 			double amount = 0.0;
-			Console.Write($"{prompt}{_prompt}");
+			var fullPrompt = $"{prompt}{_prompt}";
 			do
 			{
+				Console.Write(fullPrompt);
 				var input = Console.ReadLine();
 				if (string.IsNullOrWhiteSpace(input))
 					break;
 				if (double.TryParse(input, out amount))
 					break;
-				Console.Write($"Invalid Input. Try again{_prompt}");
+				Console.WriteLine("Invalid Input. Try again.");
 			} while (true);
 			return amount;
 		}
