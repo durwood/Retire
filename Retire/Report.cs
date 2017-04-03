@@ -15,7 +15,10 @@ namespace Retire
 
 		internal void AddExpenditure(BudgetType type, double amount)
 		{
-			_entries.Add(type, amount);
+			if (_entries.ContainsKey(type))
+				_entries[type] += amount;
+			else
+			    _entries.Add(type, amount);
 		}
 
 		public Dictionary<string, double> GetReport()
@@ -23,8 +26,11 @@ namespace Retire
 			var report = new Dictionary<string, double>();
 			foreach (var kvp in _entries)
 			{
-				BudgetCategory category = new BudgetCategory(kvp.Key);
-				report.Add(category.MainCategory, kvp.Value);
+				var mainCategory = new BudgetCategory(kvp.Key).MainCategory;
+				if (report.ContainsKey(mainCategory))
+					report[mainCategory] += kvp.Value;
+				else
+				    report.Add(mainCategory, kvp.Value);
 			}
 			return report;
 		}
