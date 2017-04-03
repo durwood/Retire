@@ -76,6 +76,18 @@ namespace Retire
 			return mainCategories;
 		}
 
+		public static ICollection<string> GetIncomeCategories()
+		{
+			var incomeCategories = new HashSet<string>();
+			foreach (var kvp in _budgetCategory)
+			{
+				var category = kvp.Value;
+				if (category.MainCategory == "Income" && !string.IsNullOrWhiteSpace(category.SubCategory))
+					incomeCategories.Add(kvp.Value.SubCategory);
+			}
+			return incomeCategories;
+		}
+
 		static BudgetCategoryFactory()
 		{
 			foreach (BudgetType budgetType in Enum.GetValues(typeof(BudgetType)))

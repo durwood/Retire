@@ -40,6 +40,20 @@ namespace Retire
 			var mainCategories = BudgetCategoryFactory.GetExpenseCategories();
 			Assert.That(mainCategories.Count, Is.EqualTo(numParents));
 		}
+
+		[Test]
+		public void IncomeCategoriesContainSubCategoriesFromSpecialIncomeMainCategory()
+		{
+			int numCategories = 0;
+			foreach (BudgetType budgetType in Enum.GetValues(typeof(BudgetType)))
+			{
+				var components = budgetType.ToString().Split('_');
+				if (components.Length == 2 && components[0] == "Income")
+					numCategories += 1;
+			}
+			var mainCategories = BudgetCategoryFactory.GetIncomeCategories();
+			Assert.That(mainCategories.Count, Is.EqualTo(numCategories));
+		}
 	}
 	
 }
