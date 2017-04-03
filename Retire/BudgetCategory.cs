@@ -98,6 +98,18 @@ namespace Retire
 			return incomeCategories;
 		}
 
+		public static string Serialize(BudgetType budgetType)
+		{
+			var category = GetBudgetCategory(budgetType);
+			return string.IsNullOrWhiteSpace(category.SubCategory) ? category.MainCategory : $"{category.MainCategory}:{category.SubCategory}";
+		}
+
+		public static BudgetType DeSerialize(string budgetTypeString)
+		{
+			var components = budgetTypeString.Split(':');
+			return GetBudgetType(components[0], components.Length > 1 ? components[1] : "");
+		}
+
 		static BudgetCategoryFactory()
 		{
 			foreach (BudgetType budgetType in Enum.GetValues(typeof(BudgetType)))

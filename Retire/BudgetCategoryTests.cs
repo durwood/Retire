@@ -68,6 +68,38 @@ namespace Retire
 			var budgetType = BudgetCategoryFactory.GetBudgetType("Income", "");
 			Assert.That(budgetType, Is.EqualTo(BudgetType.Income));
 		}
+
+		[Test]
+		public void CanSerialize()
+		{
+			var budgetType = BudgetType.Income_Salary;
+			var budgetTypeString = BudgetCategoryFactory.Serialize(budgetType);
+			Assert.That(budgetTypeString, Is.EqualTo("Income:Salary"));
+		}
+
+		[Test]
+		public void CanDeSerialize()
+		{
+			var budgetTypeString = "Income:Salary";
+			var budgetType = BudgetCategoryFactory.DeSerialize(budgetTypeString);
+			Assert.That(budgetType, Is.EqualTo(BudgetType.Income_Salary));
+		}
+
+		[Test]
+		public void CanDeserializeMainCategoryOnly()
+		{
+			var budgetTypeString = "Income";
+			var budgetType = BudgetCategoryFactory.DeSerialize(budgetTypeString);
+			Assert.That(budgetType, Is.EqualTo(BudgetType.Income));
+		}
+
+		[Test]
+		public void CanSerializeMainCategoryOnly()
+		{
+			var budgetType = BudgetType.Income;
+			var budgetTypeString = BudgetCategoryFactory.Serialize(budgetType);
+			Assert.That(budgetTypeString, Is.EqualTo("Income"));
+		}
 	}
 	
 }
