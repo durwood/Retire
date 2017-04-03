@@ -7,24 +7,37 @@ namespace Retire
 	[TestFixture]
 	public class ReportGenerationTests
 	{
+		private Report _report;
+
 		[SetUp]
 		public void SetUp()
 		{
+			_report = new Report(1);
 		}
 
 		[Test]
 		public void CanCreateEmptyReport()
 		{
-			var report = new Report(1);
-			Assert.That(report.Entries.Count, Is.EqualTo(0));
+			Assert.That(_report.GetReport().Count, Is.EqualTo(0));
 		}
 
 		[Test]
 		public void CanCreateSimpleReport()
 		{
-			var report = new Report(1);
-			report.AddExpenditure(BudgetType.Auto, 80.00);
-			Assert.That(report.Entries.Count, Is.EqualTo(1));
+			_report.AddExpenditure(BudgetType.Auto, 80.00);
+			var report = _report.GetReport();
+			Assert.That(report.Count, Is.EqualTo(1));
+			Assert.That(report[BudgetType.Auto.ToString()], Is.EqualTo(80.00));
+		}
+
+		[Test]
+		public void SubCategoriesAreStoredInParent()
+		{
+			_report.AddExpenditure(BudgetType.Auto_Gas, 80.00);
+			var report = _report.GetReport();
+			Assert.That(report.Count, Is.EqualTo(1));
+			Assert.That(report[BudgetType.Auto.ToString()], Is.EqualTo(80.00));
+			Assert.That(report.ContainsKey(BudgetType.Auto_Gas.ToString()), Is.False);
 		}
 	}
 
