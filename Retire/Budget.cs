@@ -9,6 +9,7 @@ namespace Retire
 	class Budget
 	{
 		public string Title { get; set; }
+
 		public double Total { get; private set; }
 		List<BudgetEntry> _budgetEntries = new List<BudgetEntry>();
 		Dictionary<int, double> _monthlyTotals = new Dictionary<int, double>();
@@ -94,6 +95,18 @@ namespace Retire
 			}
 
 			return budget;
+		}
+
+		internal void Save(string fname)
+		{
+			var budgetString = Serialize();
+			using (var file = new StreamWriter(fname))
+			{
+				file.WriteLine(budgetString);
+				file.Close();
+			}
+
+			return;
 		}
 }
 }

@@ -2,14 +2,37 @@
 
 namespace Retire
 {
+	// TODO:
+	// Add year to report heading i.e 2/2017
+	// Allow for Income details to be saved
+	// Add Income to budget (support weekly income, too?)
+	// Consider how to do budget category mapping and overall flow from Mint
+	// Allow for budgeted amounts to be included in report
+	//
+
 	class MainClass
 	{
 		public static void Main(string[] args)
 		{
+			// PrintSpecialFolders();
+			var docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			var budgetPath = $"{docPath}/SaveMeBudget.txt";
+			var reportPath = $"{docPath}/SaveMeReport.txt";
+
 			var budget = CreateBudget("2017 Budget");
+			budget.Save(budgetPath);
 			Console.WriteLine(budget);
 
-			DoMonthlyReport();
+			var report = DoMonthlyReport();
+			report.Save(reportPath);
+		}
+
+		public static void PrintSpecialFolders()
+		{
+			foreach (Environment.SpecialFolder folder in Enum.GetValues(typeof(Environment.SpecialFolder)))
+			{
+				Console.WriteLine($"{folder.ToString()} : {Environment.GetFolderPath(folder)}");
+			}
 		}
 
 		public static Budget CreateBudget(string title)
@@ -50,7 +73,7 @@ namespace Retire
 			return budget;
 		}
 
-		public static void DoMonthlyReport()
+		public static Report DoMonthlyReport()
 		{
 			var month = GetMonth();
 			var report = new Report(month);
@@ -59,9 +82,9 @@ namespace Retire
 			AddExpenses(report);
 
 			foreach (var reportEntry in report.GetReport())
-			{
 				Console.WriteLine(reportEntry.ToString());
-			}
+			
+			return report;
 		}
 
 		static string _prompt = "> ";

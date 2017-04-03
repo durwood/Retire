@@ -37,6 +37,17 @@ namespace Retire
 			return report;
 		}
 
+		internal void Save(string fname)
+		{
+			var reportString = Serialize();
+			using (var file = new StreamWriter(fname))
+			{
+				file.WriteLine(reportString);
+				file.Close();
+			}
+			return;
+		}
+
 		internal string Serialize()
 		{
 			var sb = new StringBuilder();
