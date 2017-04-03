@@ -4,24 +4,20 @@ using System.Collections.Generic;
 namespace Retire
 {
 
-	class ReportEntry
-	{
-	}
-
-	class Report
+	public class Report
 	{
 		public int Month { get; private set; }
-		private List<ReportEntry> _entries = new List<ReportEntry>();
+		public Dictionary<BudgetType, double> Entries { get; private set; }
 
 		public Report(int month)
 		{
 			Month = month;
+			Entries = new Dictionary<BudgetType, double>();
 		}
 
-		public List<ReportEntry> GetEntries()
+		internal void AddExpenditure(BudgetType type, double amount)
 		{
-			return _entries;
+			Entries.Add(type, amount);
 		}
-
 	}
 }

@@ -18,6 +18,14 @@ namespace Retire
 			Assert.That(category.MainCategory, Is.EqualTo("Utilities"));
 			Assert.That(category.SubCategory, Is.EqualTo("Gas"));
 		}
+
+		[Test]
+		public void CanSupportCategoryWithNoSubCategory()
+		{
+			var category = new BudgetCategory(BudgetType.Utilities);
+			Assert.That(category.MainCategory, Is.EqualTo("Utilities"));
+			Assert.That(category.SubCategory, Is.EqualTo(""));
+		}
 	}
 	
 }

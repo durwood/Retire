@@ -5,21 +5,29 @@ namespace Retire
 {
 	public enum BudgetType
 	{
+		Auto,
 		Auto_Gas,
 		Auto_Insurance,
+		Digital,
 		Digital_Movies,
 		Digital_Music,
 		Digital_Subscription,
+		Entertainment,
+		Entertainment_Movies,
 		Entertainment_SportingEvents,
+		Home,
 		Home_Mortgage,
+		Medical,
 		Medical_Insurance,
+		Shopping,
 		Shopping_Subscription,
+		Utilities,
 		Utilities_Electricity,
 		Utilities_Gas, 
 		Utilities_InternetCable,
 		Utilities_WaterSewerWaste,
-		Gift_FamilyFriends,
-		Entertainment_Movies
+		Gift,
+		Gift_FamilyFriends
 	}
 
 	public class BudgetCategory
@@ -33,7 +41,7 @@ namespace Retire
 			BudgetType = budgetType;
 			var mainAndSub = budgetType.ToString().Split('_');
 			MainCategory = mainAndSub[0];
-			SubCategory = mainAndSub[1];
+			SubCategory = mainAndSub.Length > 1 ? mainAndSub[1] : "";
 		}
 
 		public override string ToString()
