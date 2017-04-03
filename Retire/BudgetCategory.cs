@@ -64,6 +64,16 @@ namespace Retire
 			return _budgetCategory[budgetType];
 		}
 
+		public static BudgetType GetBudgetType(string mainCategory, string subCategory)
+		{
+			foreach (var kvp in _budgetCategory)
+			{
+				if (kvp.Value.MainCategory.Equals(mainCategory) && kvp.Value.SubCategory.Equals(subCategory))
+					return kvp.Key;
+			}
+			throw new ArgumentException($"Invalid Categories: {mainCategory}:{subCategory}");
+		}
+
 		public static ICollection<string> GetExpenseCategories()
 		{
 			var mainCategories = new HashSet<string>();

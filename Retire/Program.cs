@@ -9,14 +9,7 @@ namespace Retire
 			var budget = CreateBudget("2017 Budget");
 			Console.WriteLine(budget);
 
-			Console.Write("Enter month for Report: ");
-			var input = Console.ReadLine();
-
-			int month;
-			if (int.TryParse(input, out month))
-			{
-				Console.WriteLine($"Generating report for month {month}");
-			}
+			DoMonthlyReport();
 		}
 
 		public static Budget CreateBudget(string title)
@@ -58,8 +51,53 @@ namespace Retire
 			return budget;
 		}
 
-		public static void DoMonthlyReport(int month)
+		public static void DoMonthlyReport()
 		{
+			var month = GetMonth();
+			var report = new Report(month);
+			Console.WriteLine("When prompted, enter income...");
+			var incomeCategories = BudgetCategoryFactory.GetIncomeCategories();
+			foreach (var category in incomeCategories)
+			{
+				var prompt = string.IsNullOrWhiteSpace(category) ? "Unspecified Income" : category;
+				var amount = GetPromptedAmount(prompt);
+				var budgetType = BudgetCategoryFactory.GetBudgetType("Income", category);
+				report.AddExpenditure(budgetType, amount);
+			}
+			foreach (var reportEntry in report.GetReport())
+			{
+				Console.WriteLine(reportEntry.ToString());
+			}
+		}
+
+		private static int GetMonth()
+		{
+			int month;
+			Console.Write("Enter integer value for month: ");
+			do
+			{
+				var input = Console.ReadLine();
+				if (int.TryParse(input, out month) && month > 0 && month < 13)
+					break;
+				Console.WriteLine($"Invalid Month. Try again> ");
+			} while (true);
+			return month;
+		}
+
+		private static double GetPromptedAmount(string prompt)
+		{
+			double amount = 0.0;
+			Console.Write(prompt);
+			do
+			{
+				var input = Console.ReadLine();
+				if (string.IsNullOrWhiteSpace(input))
+					break;
+				if (double.TryParse(input, out amount))
+					break;
+				Console.WriteLine($"Invalid Input. Try again> ");
+			} while (true);
+			return amount;
 		}
 	}
 }

@@ -54,6 +54,20 @@ namespace Retire
 			var mainCategories = BudgetCategoryFactory.GetIncomeCategories();
 			Assert.That(mainCategories.Count, Is.EqualTo(numCategories));
 		}
+
+		[Test]
+		public void CanGetBudgetTypeForValidCategories()
+		{
+			var budgetType = BudgetCategoryFactory.GetBudgetType("Income", "Misc");
+			Assert.That(budgetType, Is.EqualTo(BudgetType.Income_Misc));
+		}
+
+		[Test]
+		public void GetBudgetTypeHandlesEmptySubCategories()
+		{
+			var budgetType = BudgetCategoryFactory.GetBudgetType("Income", "");
+			Assert.That(budgetType, Is.EqualTo(BudgetType.Income));
+		}
 	}
 	
 }
