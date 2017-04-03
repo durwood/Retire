@@ -74,5 +74,47 @@ namespace Retire
 			Assert.That(_budget.MonthlyTotal(12), Is.EqualTo(100.0));
 			Assert.That(_budget.MonthlyTotal(1), Is.EqualTo(0.0));
 		}
-	}
+
+		[Test]
+		public void CanSerializeBudget()
+		{
+			CreateSerializedTestBudget();
+			ValidateSerializedTestBudget(_budget);
+			var budgetString = _budget.Serialize();
+			Console.WriteLine(budgetString);
+			var budget = Budget.DeSerialize(budgetString);
+			ValidateSerializedTestBudget(budget);
+		}
+
+		void ValidateSerializedTestBudget(Budget budget)
+		{
+			Assert.That(budget.Total, Is.EqualTo(1610.00));
+			Assert.That(budget.MonthlyTotal(1), Is.EqualTo(140.00));
+			Assert.That(budget.MonthlyTotal(2), Is.EqualTo(150.00));
+			Assert.That(budget.MonthlyTotal(3), Is.EqualTo(140.00));
+			Assert.That(budget.MonthlyTotal(4), Is.EqualTo(100.00));
+			Assert.That(budget.MonthlyTotal(5), Is.EqualTo(200.00));
+			Assert.That(budget.MonthlyTotal(6), Is.EqualTo(100.00));
+			Assert.That(budget.MonthlyTotal(7), Is.EqualTo(140.00));
+			Assert.That(budget.MonthlyTotal(8), Is.EqualTo(100.00));
+			Assert.That(budget.MonthlyTotal(9), Is.EqualTo(140.00));
+			Assert.That(budget.MonthlyTotal(10), Is.EqualTo(100.00));
+			Assert.That(budget.MonthlyTotal(11), Is.EqualTo(200.00));
+			Assert.That(budget.MonthlyTotal(12), Is.EqualTo(100.00));
+		}
+
+		void CreateSerializedTestBudget()
+		{
+			var entry1 = new BudgetEntryMonthly(30.00, "Gas Bill", BudgetType.Utilities_Gas);
+			var entry2 = new BudgetEntryBiMonthly(40.00, 1, "Water Bill", BudgetType.Utilities_WaterSewerWaste);
+			var entry3 = new BudgetEntryAnnual(50.00, 2, "Mariners", BudgetType.Entertainment_SportingEvents);
+			var entry4 = new BudgetEntryBiAnnual(60.00, 5, "Progressive BMW", BudgetType.Auto_Insurance);
+			var entry5 = new BudgetEntryMonthly(70.00, "Misc Utility", BudgetType.Utilities);
+			_budget.AddEntry(entry1);
+			_budget.AddEntry(entry2);
+			_budget.AddEntry(entry3);
+			_budget.AddEntry(entry4);
+			_budget.AddEntry(entry5);
+		}
+}
 }

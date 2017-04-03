@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Globalization;
+using System.IO;
 
 namespace Retire
 {
@@ -51,5 +52,48 @@ namespace Retire
 			sb.AppendLine($"{"Total",6}: {Total,10:C2}");
 			return sb.ToString();
 		}
-	}
+
+		internal string Serialize()
+		{
+			var sb = new StringBuilder();
+			sb.AppendLine(Title.ToString());
+			foreach (var entry in _budgetEntries)
+			{
+				sb.AppendLine(entry.Serialize());
+			}
+			return sb.ToString(); ;
+		}
+
+		internal static Budget DeSerialize(string budgetString)
+		{
+			Budget budget = null;
+			string title = null;
+			using (StringReader reader = new StringReader(budgetString))
+			{
+				string line = string.Empty;
+				do
+				{
+					line = reader.ReadLine();
+					if (line != null)
+					{
+						if (title == null)
+						{
+							title = line;
+							budget = new Budget(title);
+						}
+						else
+						{
+							var components = line.Split(',');
+
+							var budgetEntry = BudgetFactory.CreateBudgetEntry(components);
+							budget.AddEntry(budgetEntry);
+						}
+					}
+
+				} while (line != null);
+			}
+
+			return budget;
+		}
+}
 }

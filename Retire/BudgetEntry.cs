@@ -26,13 +26,27 @@ namespace Retire
 		{
 			return month > 0 && month < 13;
 		}
-	}
+
+
+		public virtual string Serialize()
+		{
+			var categoryString = BudgetCategoryFactory.Serialize(Category.BudgetType);
+			var amountString = _amount.ToString();
+			return $"{categoryString},{amountString},{Label}";
+		}
+
+}
 
 	public class BudgetEntryMonthly : BudgetEntry
 	{
 		public BudgetEntryMonthly(double amount, string label, BudgetType budgetType)
 			: base(amount, label, budgetType)
 		{
+		}
+
+		public override string Serialize()
+		{
+			return "Monthly," + base.Serialize();
 		}
 	}
 
@@ -55,6 +69,12 @@ namespace Retire
 		{
 			return month % 2 == 1;
 		}
+
+		public override string Serialize()
+		{
+			var month = Odd ? "1" : "2";
+			return $"BiMonthly,{month}," + base.Serialize();
+		}
 	}
 
 	public class BudgetEntryAnnual : BudgetEntry
@@ -70,6 +90,12 @@ namespace Retire
 		protected override bool ValidMonth(int month)
 		{
 			return base.ValidMonth(month) && month == _month;
+		}
+
+		public override string Serialize()
+		{
+			var month = _month.ToString();
+			return $"Annual,{month}," + base.Serialize();
 		}
 	}
 
@@ -88,6 +114,12 @@ namespace Retire
 		protected override bool ValidMonth(int month)
 		{
 			return base.ValidMonth(month) && (month == _month || month == _month + 6);
+		}
+
+		public override string Serialize()
+		{
+			var month = _month.ToString();
+			return $"BiAnnual,{month}," + base.Serialize();
 		}
 	}
 }

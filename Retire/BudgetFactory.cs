@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Retire
 {
@@ -36,5 +38,45 @@ namespace Retire
 			_budget = new Budget();
 		}
 
+		public static BudgetEntry CreateBudgetEntry(string[] components)
+		{
+			BudgetEntry result = null;
+			double amount;
+			string label;
+			BudgetType budgetType;
+			int month;
+			switch (components[0])
+			{
+				case "Annual":
+					month = int.Parse(components[1]);
+					GetCommonParameters(components.Skip(2).ToArray(), out amount, out label, out budgetType);
+					result = new BudgetEntryAnnual(amount, month, label, budgetType);
+					break;
+				case "BiAnnual":
+					month = int.Parse(components[1]);
+					GetCommonParameters(components.Skip(2).ToArray(), out amount, out label, out budgetType);
+					result = new BudgetEntryBiAnnual(amount, month, label, budgetType);
+					break;
+				case "Monthly":
+					GetCommonParameters(components.Skip(1).ToArray(), out amount, out label, out budgetType);
+					result = new BudgetEntryMonthly(amount, label, budgetType);
+					break;
+				case "BiMonthly":
+					month = int.Parse(components[1]);
+					GetCommonParameters(components.Skip(2).ToArray(), out amount, out label, out budgetType);
+					result = new BudgetEntryBiMonthly(amount, month, label, budgetType);
+					break;
+				default:
+					throw new ArgumentException($"Invalid Budget Entry Type {components[0]}");
+			}
+			return result;
+		}
+
+		static void GetCommonParameters(string [] components, out double amount, out string label, out BudgetType budgetType)
+		{
+			budgetType = BudgetCategoryFactory.DeSerialize(components[0]);
+			amount = double.Parse(components[1]);
+			label = components[2];
+		}
 	}
 }
