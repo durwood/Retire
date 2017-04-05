@@ -51,6 +51,23 @@ namespace Retire
 			var report = _report.GetReport();
 			Assert.That(report.Count, Is.EqualTo(1));
 			Assert.That(report[BudgetType.Auto.ToString()], Is.EqualTo(200.00));
+
+		}
+
+		[Test]
+		public void CanAccumulateDetailedIncomeCategories()
+		{
+			_report.AddExpenditure(BudgetType.Income, 100);
+			_report.AddExpenditure(BudgetType.Income_Airbnb, 200);
+
+			var report = _report.GetReport();
+			Assert.That(report.Count, Is.EqualTo(2));
+			Assert.That(report[BudgetType.Income.ToString()], Is.EqualTo(100.00));
+			Assert.That(report[BudgetType.Income_Airbnb.ToString()], Is.EqualTo(200.00));
+
+			report = _report.GetReport(incomeDetails: false);
+			Assert.That(report.Count, Is.EqualTo(1));
+			Assert.That(report[BudgetType.Income.ToString()], Is.EqualTo(300.00));
 		}
 
 		[Test]

@@ -29,18 +29,27 @@ namespace Retire
 			    Entries.Add(type, amount);
 		}
 
-		public Dictionary<string, double> GetReport()
+		public Dictionary<string, double> GetReport(bool incomeDetails = true)
 		{
 			var report = new Dictionary<string, double>();
 			foreach (var kvp in Entries)
 			{
-				var mainCategory = new BudgetCategory(kvp.Key).MainCategory;
-				if (report.ContainsKey(mainCategory))
-					report[mainCategory] += kvp.Value;
+				var amount = kvp.Value;
+				var budgetCategory = new BudgetCategory(kvp.Key);
+				if (budgetCategory.MainCategory == "Income" && incomeDetails && !string.IsNullOrWhiteSpace(budgetCategory.SubCategory))
+					UpdateReport(report, budgetCategory.SubCategory, amount);
 				else
-				    report.Add(mainCategory, kvp.Value);
+				   UpdateReport(report, budgetCategory.MainCategory, amount);
 			}
 			return report;
+		}
+
+		private void UpdateReport(Dictionary<string, double> report, string category, double value)
+		{
+			if (report.ContainsKey(category))
+				report[category] += value;
+			else
+				report.Add(category, value);
 		}
 
 		internal void Save(string fname)

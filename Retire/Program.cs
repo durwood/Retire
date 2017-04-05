@@ -4,9 +4,9 @@ namespace Retire
 {
 	// TODO:
 	// DONE Support weekly budget entries
-	// PARTIAL (done, old code still around) Convert to using JSON for serizlization
-	// Add year to report heading i.e 2/2017
-	// Allow for Income details to be saved
+	// DONE Convert to using JSON for serizlization
+	// DONE Add year to report heading i.e 2/2017
+	// DONE Allow for Income details to be saved
 	// Add Income to budget (support weekly income, too?)
 	// Consider how to do budget category mapping and overall flow from Mint
 	// Allow for budgeted amounts to be included in report
@@ -80,7 +80,8 @@ namespace Retire
 		public static Report DoMonthlyReport()
 		{
 			var month = GetMonth();
-			var report = new Report(month, 2017);
+			var year = GetYear();
+			var report = new Report(month, year);
 
 			AddIncome(report);
 			AddExpenses(report);
@@ -130,6 +131,20 @@ namespace Retire
 				Console.Write($"Invalid Month. Try again{_prompt}");
 			} while (true);
 			return month;
+		}
+
+		private static int GetYear()
+		{
+			int year;
+			Console.Write($"Enter year{_prompt}");
+			do
+			{
+				var input = Console.ReadLine();
+				if (int.TryParse(input, out year) && year > 2000 && year <= DateTime.Now.Year)
+					break;
+				Console.Write($"Invalid Year. Try again{_prompt}");
+			} while (true);
+			return year;
 		}
 
 		private static double GetPromptedAmount(string prompt)
