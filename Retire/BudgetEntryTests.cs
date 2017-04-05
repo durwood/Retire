@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Retire
@@ -86,6 +88,36 @@ namespace Retire
 		}
 
 		[Test]
+		public void CanJsonSerializeBudgetEntries()
+		{
+			var jsonSettings = new JsonSerializerSettings
+			{
+				TypeNameHandling = TypeNameHandling.All
+			};
+
+			List<BudgetEntry> input = new List<BudgetEntry>();
+			input.Add(new BudgetEntryMonthly(400, "Foo", BudgetType.Auto_Gas));
+			input.Add(new BudgetEntryBiMonthly(100, 1, "FooBar", BudgetType.Auto_Insurance));
+			input.Add(new BudgetEntryAnnual(50, 2, "Feb", BudgetType.Entertainment_SportingEvents));
+			input.Add(new BudgetEntryBiAnnual(30.0, 3, "Mar_Sep", BudgetType.Auto_Insurance));
+			input.Add(new BudgetEntryWeekly(300, "FooBar", BudgetType.Personal, 6, 1));
+			var json = JsonConvert.SerializeObject(input, Formatting.Indented,jsonSettings );
+			var result = JsonConvert.DeserializeObject<List<BudgetEntry>>(json, jsonSettings );
+			Assert.That(result[0], Is.TypeOf(typeof(BudgetEntryMonthly)));
+			Assert.That(result[1], Is.TypeOf(typeof(BudgetEntryBiMonthly)));
+			Assert.That(result[2], Is.TypeOf(typeof(BudgetEntryAnnual)));
+		    Assert.That(result[3], Is.TypeOf(typeof(BudgetEntryBiAnnual)));
+			Assert.That(result[4], Is.TypeOf(typeof(BudgetEntryWeekly)));
+			Console.WriteLine(json);
+
+			CreateSerializedTestBudget();
+			json = JsonConvert.SerializeObject(_budget, Formatting.Indented, jsonSettings);
+			var budget = JsonConvert.DeserializeObject<Budget>(json, jsonSettings);
+			Assert.That(_budget.Total, Is.EqualTo(budget.Total));
+			Console.WriteLine(json);
+		}
+
+		[Test]
 		public void CanSerializeBudget()
 		{
 			CreateSerializedTestBudget();
@@ -120,7 +152,7 @@ namespace Retire
 			var entry3 = new BudgetEntryAnnual(50.00, 2, "Mariners", BudgetType.Entertainment_SportingEvents);
 			var entry4 = new BudgetEntryBiAnnual(60.00, 5, "Progressive BMW", BudgetType.Auto_Insurance);
 			var entry5 = new BudgetEntryMonthly(70.00, "Misc Utility", BudgetType.Utilities);
-			var entry6 = new BudgetEntryWeekly(10, "Weekly", BudgetType.Personal);
+			var entry6 = new BudgetEntryWeekly(10, "Weekly", BudgetType.Personal, 1, 1);
 			_budget.AddEntry(entry1);
 			_budget.AddEntry(entry2);
 			_budget.AddEntry(entry3);

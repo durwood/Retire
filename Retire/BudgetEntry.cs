@@ -1,25 +1,59 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Retire
 {
+	public abstract class BudgetEntryDto
+	{
+		protected double Amount;
+		public string Label;
+		public BudgetCategory Category;
+
+		public BudgetEntryDto(BudgetEntry budgetEntry)
+		{
+			Amount = budgetEntry.Amount;
+			Label = budgetEntry.Label;
+			Category = budgetEntry.Category;
+		}
+
+
+
+		// Create Dto from binary object
+		// Create Object from string
+	}
+
+	public class BudgetEntryMonthlyDto : BudgetEntryDto
+	{
+		public BudgetEntryMonthlyDto(BudgetEntryMonthly budgetEntry) : base(budgetEntry)
+		{
+		}
+	}
 
 	public abstract class BudgetEntry
 	{
 		public string Label { get; private set; }
+
+		[JsonConverter(typeof(StringEnumConverter))]
+		public BudgetType BudgetType;
+		public double Amount { get; private set; }
+
+		[JsonIgnore]
 		public BudgetCategory Category { get; private set; }
-		protected double _amount;
+
 
 		public BudgetEntry(double amount, string label, BudgetType budgetType)
 		{
-			_amount = amount;
+			Amount = amount;
 			this.Label = label;
+			BudgetType = budgetType;
 			this.Category = BudgetCategoryFactory.GetBudgetCategory(budgetType);
 		}
 
 		public virtual double GetMonthEntry(int month)
 		{
-			return ValidMonth(month) ? _amount : 0.0;
+			return ValidMonth(month) ? Amount : 0.0;
 		}
 
 		protected virtual bool ValidMonth(int month)
@@ -31,7 +65,7 @@ namespace Retire
 		public virtual string Serialize()
 		{
 			var categoryString = BudgetCategoryFactory.Serialize(Category.BudgetType);
-			var amountString = _amount.ToString();
+			var amountString = Amount.ToString();
 			return $"{categoryString},{amountString},{Label}";
 		}
 
@@ -52,12 +86,20 @@ namespace Retire
 
 	public class BudgetEntryBiMonthly : BudgetEntry
 	{
-		public bool Odd { get; private set; }
+		[JsonProperty]
+		private bool Odd { get; set; }
 
 		public BudgetEntryBiMonthly(double amount, int month, string label, BudgetType budgetType)
 			: base(amount, label, budgetType)
 		{
 			this.Odd = IsOdd(month);
+		}
+
+		[JsonConstructor]
+		public BudgetEntryBiMonthly(double amount, bool odd, string label, BudgetType budgetType)
+	: base(amount, label, budgetType)
+		{
+			this.Odd = odd;
 		}
 
 		protected override bool ValidMonth(int month)
@@ -79,28 +121,30 @@ namespace Retire
 
 	public class BudgetEntryAnnual : BudgetEntry
 	{
-		private int _month;
+		[JsonProperty]
+		private int Month { get; set; }
 
 		public BudgetEntryAnnual(double amount, int month, string label, BudgetType budgetType)
 			: base(amount, label, budgetType)
 		{
-			_month = month;
+			Month = month;
 		}
 
 		protected override bool ValidMonth(int month)
 		{
-			return base.ValidMonth(month) && month == _month;
+			return base.ValidMonth(month) && month == Month;
 		}
 
 		public override string Serialize()
 		{
-			var month = _month.ToString();
+			var month = Month.ToString();
 			return $"Annual,{month}," + base.Serialize();
 		}
 	}
 
 	public class BudgetEntryBiAnnual : BudgetEntry
 	{
+		[JsonProperty]
 		private int _month;
 
 		public BudgetEntryBiAnnual(double amount, int month, string label, BudgetType budgetType)
@@ -127,20 +171,25 @@ namespace Retire
 	{
 		private Dictionary<int, double> _monthly = new Dictionary<int, double> {
 			{ 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, {7,0}, {8,0}, {9,0}, {10,0}, {11,0}, {12, 0}};
-		int _period;
-		int _start;
 
+		[JsonProperty]
+		private int Period;
+
+		[JsonProperty]
+		private int Start;
+
+		[JsonConstructor]
 		public BudgetEntryWeekly(double amount, string label, BudgetType budgetType, int period, int start) : base(amount, label, budgetType)
 		{
-			_period = period;
-			_start = start;
+			Period = period;
+			Start = start;
 
 			var date = new DateTime(2017, 1, 1);
-			for (int week = _start; week <= 52; week += _period)
+			for (int week = start; week <= 52; week += period)
 			{
 				var curDate = date.AddDays(week * 7);
 				var month = curDate.Month;
-				_monthly[month] += _amount;                 
+				_monthly[month] += Amount;                 
 			}
 		}
 
@@ -160,7 +209,7 @@ namespace Retire
 
 		public override string Serialize()
 		{
-			return $"Weekly,{_start},{_period}," + base.Serialize();
+			return $"Weekly,{Start},{Period}," + base.Serialize();
 		}
 	}
 }

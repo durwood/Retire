@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Retire
@@ -65,6 +66,20 @@ namespace Retire
 			var entries = report.GetReport();
 			Assert.That(entries["Auto"], Is.EqualTo(100.00));
 			Assert.That(entries["Income"], Is.EqualTo(300.00));
+		}
+
+		[Test]
+		public void CanJsonSerializeReport()
+		{
+			_report.AddExpenditure(BudgetType.Auto_Gas, 80.00);
+			_report.AddExpenditure(BudgetType.Auto, 20.00);
+			_report.AddExpenditure(BudgetType.Income_Salary, 300.00);
+			var savedReport = JsonConvert.SerializeObject(_report);
+			Console.WriteLine(savedReport);
+
+			var report = JsonConvert.DeserializeObject<Report>(savedReport);
+			Console.WriteLine(JsonConvert.SerializeObject(report));
+
 		}
 	}
 

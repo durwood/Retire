@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Retire
 {
@@ -9,7 +10,8 @@ namespace Retire
 	public class Report
 	{
 		public int Month { get; private set; }
-		private Dictionary<BudgetType, double> _entries = new Dictionary<BudgetType, double>();
+		[JsonProperty]
+		private Dictionary<BudgetType, double> Entries = new Dictionary<BudgetType, double>();
 		public Report(int month)
 		{
 			Month = month;
@@ -17,16 +19,16 @@ namespace Retire
 
 		internal void AddExpenditure(BudgetType type, double amount)
 		{
-			if (_entries.ContainsKey(type))
-				_entries[type] += amount;
+			if (Entries.ContainsKey(type))
+				Entries[type] += amount;
 			else
-			    _entries.Add(type, amount);
+			    Entries.Add(type, amount);
 		}
 
 		public Dictionary<string, double> GetReport()
 		{
 			var report = new Dictionary<string, double>();
-			foreach (var kvp in _entries)
+			foreach (var kvp in Entries)
 			{
 				var mainCategory = new BudgetCategory(kvp.Key).MainCategory;
 				if (report.ContainsKey(mainCategory))

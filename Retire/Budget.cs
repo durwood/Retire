@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Globalization;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace Retire
 {
@@ -11,13 +12,24 @@ namespace Retire
 		public string Title { get; set; }
 
 		public double Total { get; private set; }
-		List<BudgetEntry> _budgetEntries = new List<BudgetEntry>();
+
+		[JsonProperty]
+		List<BudgetEntry> BudgetEntries = new List<BudgetEntry>();
+
 		Dictionary<int, double> _monthlyTotals = new Dictionary<int, double>();
 
 		public Budget()
 		{
 			for (int ii = 1; ii <= 12; ++ii)
 				_monthlyTotals.Add(ii, 0.0);
+		}
+
+		[JsonConstructor]
+		public Budget(string title, List<BudgetEntry> budgetEntries) : this()
+		{
+			foreach (var entry in budgetEntries)
+				AddEntry(entry);
+			Title = title;
 		}
 
 		public Budget(string title) : this()
@@ -27,7 +39,7 @@ namespace Retire
 
 		public void AddEntry(BudgetEntry budgetEntry)
 		{
-			_budgetEntries.Add(budgetEntry);
+			BudgetEntries.Add(budgetEntry);
 			for (int ii = 1; ii <= 12; ++ii)
 			{
 				var monthlyEntry = budgetEntry.GetMonthEntry(ii);
@@ -58,7 +70,7 @@ namespace Retire
 		{
 			var sb = new StringBuilder();
 			sb.AppendLine(Title.ToString());
-			foreach (var entry in _budgetEntries)
+			foreach (var entry in BudgetEntries)
 			{
 				sb.AppendLine(entry.Serialize());
 			}
