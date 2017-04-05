@@ -4,6 +4,7 @@ namespace Retire
 {
 	// TODO:
 	// DONE Support weekly budget entries
+	// PARTIAL (done, old code still around) Convert to using JSON for serizlization
 	// Add year to report heading i.e 2/2017
 	// Allow for Income details to be saved
 	// Add Income to budget (support weekly income, too?)
@@ -79,7 +80,7 @@ namespace Retire
 		public static Report DoMonthlyReport()
 		{
 			var month = GetMonth();
-			var report = new Report(month);
+			var report = new Report(month, 2017);
 
 			AddIncome(report);
 			AddExpenses(report);

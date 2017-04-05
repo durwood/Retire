@@ -10,11 +10,15 @@ namespace Retire
 	public class Report
 	{
 		public int Month { get; private set; }
+		public int Year { get; private set; }
+
 		[JsonProperty]
 		private Dictionary<BudgetType, double> Entries = new Dictionary<BudgetType, double>();
-		public Report(int month)
+
+		public Report(int month, int year)
 		{
 			Month = month;
+			Year = year;
 		}
 
 		internal void AddExpenditure(BudgetType type, double amount)
@@ -41,61 +45,23 @@ namespace Retire
 
 		internal void Save(string fname)
 		{
-			var reportString = Serialize();
-			using (var file = new StreamWriter(fname))
-			{
-				file.WriteLine(reportString);
-				file.Close();
-			}
-			return;
+			File.WriteAllText(fname, Serialize());
 		}
 
 		internal string Serialize()
 		{
-			var sb = new StringBuilder();
-			sb.AppendLine(Month.ToString());
-			foreach (var kvp in GetReport())
+			var jsonSettings = new JsonSerializerSettings
 			{
-				if (Math.Abs(kvp.Value) > 0.005)
-				{
-					var amount = kvp.Value.ToString();
-					sb.AppendLine($"{kvp.Key} {amount}");
-				}
-			}
-				
-			return sb.ToString();;
+				//TypeNameHandling = TypeNameHandling.All,
+				Formatting = Formatting.Indented
+			};
+			return JsonConvert.SerializeObject(this, jsonSettings);
+		
 		}
 
 		public static Report DeSerialize(string savedReport)
 		{
-			Report report = null;
-			int month = 0;
-			using (StringReader reader = new StringReader(savedReport))
-			{
-				string line = string.Empty;
-				do
-				{
-					line = reader.ReadLine();
-					if (line != null)
-					{
-						if (month == 0)
-						{
-							month = int.Parse(line);
-							report = new Report(month);
-						}
-						else
-						{
-							var components = line.Split(' ');
-							var budgetType = BudgetCategoryFactory.DeSerialize(components[0]);
-							var amount = double.Parse(components[1]);
-							report.AddExpenditure(budgetType, amount);
-						}
-						// do something with the line
-					}
-
-				} while (line != null);
-			}
-
+			Report report = JsonConvert.DeserializeObject<Report>(savedReport);
 			return report;
 		}
 }

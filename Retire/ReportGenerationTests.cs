@@ -13,7 +13,7 @@ namespace Retire
 		[SetUp]
 		public void SetUp()
 		{
-			_report = new Report(1);
+			_report = new Report(1, 2017);
 		}
 
 		[Test]

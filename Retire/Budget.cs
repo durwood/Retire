@@ -111,13 +111,16 @@ namespace Retire
 
 		internal void Save(string fname)
 		{
-			var budgetString = Serialize();
-			using (var file = new StreamWriter(fname))
+			var jsonSettings = new JsonSerializerSettings
 			{
-				file.WriteLine(budgetString);
-				file.Close();
+				TypeNameHandling = TypeNameHandling.All,
+				Formatting = Formatting.Indented                                 
+			};
+			using (StreamWriter file = File.CreateText(fname))
+			{
+				var serializer = JsonSerializer.Create(jsonSettings);
+				serializer.Serialize(file, this);
 			}
-
 			return;
 		}
 }
