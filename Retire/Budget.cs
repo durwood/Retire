@@ -68,60 +68,22 @@ namespace Retire
 
 		internal string Serialize()
 		{
-			var sb = new StringBuilder();
-			sb.AppendLine(Title.ToString());
-			foreach (var entry in BudgetEntries)
+			var jsonSettings = new JsonSerializerSettings
 			{
-				sb.AppendLine(entry.Serialize());
-			}
-			return sb.ToString(); ;
+				TypeNameHandling = TypeNameHandling.All,
+				Formatting = Formatting.Indented
+			};
+			return JsonConvert.SerializeObject(this, jsonSettings);
 		}
 
 		internal static Budget DeSerialize(string budgetString)
 		{
-			Budget budget = null;
-			string title = null;
-			using (StringReader reader = new StringReader(budgetString))
-			{
-				string line = string.Empty;
-				do
-				{
-					line = reader.ReadLine();
-					if (line != null)
-					{
-						if (title == null)
-						{
-							title = line;
-							budget = new Budget(title);
-						}
-						else
-						{
-							var components = line.Split(',');
-
-							var budgetEntry = BudgetFactory.CreateBudgetEntry(components);
-							budget.AddEntry(budgetEntry);
-						}
-					}
-
-				} while (line != null);
-			}
-
-			return budget;
+			return JsonConvert.DeserializeObject<Budget>(budgetString);
 		}
 
 		internal void Save(string fname)
 		{
-			var jsonSettings = new JsonSerializerSettings
-			{
-				TypeNameHandling = TypeNameHandling.All,
-				Formatting = Formatting.Indented                                 
-			};
-			using (StreamWriter file = File.CreateText(fname))
-			{
-				var serializer = JsonSerializer.Create(jsonSettings);
-				serializer.Serialize(file, this);
-			}
-			return;
+			File.WriteAllText(fname, Serialize());
 		}
 }
 }
