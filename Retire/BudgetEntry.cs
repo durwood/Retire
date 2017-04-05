@@ -8,7 +8,7 @@ namespace Retire
 	{
 		public string Label { get; private set; }
 		public BudgetCategory Category { get; private set; }
-		private double _amount;
+		protected double _amount;
 
 		public BudgetEntry(double amount, string label, BudgetType budgetType)
 		{
@@ -17,7 +17,7 @@ namespace Retire
 			this.Category = BudgetCategoryFactory.GetBudgetCategory(budgetType);
 		}
 
-		public double GetMonthEntry(int month)
+		public virtual double GetMonthEntry(int month)
 		{
 			return ValidMonth(month) ? _amount : 0.0;
 		}
@@ -120,6 +120,47 @@ namespace Retire
 		{
 			var month = _month.ToString();
 			return $"BiAnnual,{month}," + base.Serialize();
+		}
+	}
+
+	class BudgetEntryWeekly : BudgetEntry
+	{
+		private Dictionary<int, double> _monthly = new Dictionary<int, double> {
+			{ 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, {7,0}, {8,0}, {9,0}, {10,0}, {11,0}, {12, 0}};
+		int _period;
+		int _start;
+
+		public BudgetEntryWeekly(double amount, string label, BudgetType budgetType, int period, int start) : base(amount, label, budgetType)
+		{
+			_period = period;
+			_start = start;
+
+			var date = new DateTime(2017, 1, 1);
+			for (int week = _start; week <= 52; week += _period)
+			{
+				var curDate = date.AddDays(week * 7);
+				var month = curDate.Month;
+				_monthly[month] += _amount;                 
+			}
+		}
+
+		public BudgetEntryWeekly(double amount, string label, BudgetType budgetType, int period) : this(amount, label, budgetType, period, 1)
+		{
+			
+		}
+
+		public BudgetEntryWeekly(double amount, string label, BudgetType budgetType) : this(amount, label, budgetType, 1, 1)
+		{
+		}
+
+		public override double GetMonthEntry(int month)
+		{
+			return ValidMonth(month) ? _monthly[month] : 0.0;
+		}
+
+		public override string Serialize()
+		{
+			return $"Weekly,{_start},{_period}," + base.Serialize();
 		}
 	}
 }

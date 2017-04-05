@@ -3,6 +3,7 @@
 namespace Retire
 {
 	// TODO:
+	// DONE Support weekly budget entries
 	// Add year to report heading i.e 2/2017
 	// Allow for Income details to be saved
 	// Add Income to budget (support weekly income, too?)
@@ -58,6 +59,8 @@ namespace Retire
 			BudgetFactory.CreateAnnual(BudgetType.Shopping_Subscription, "Costco", 55.00, 3);
 			BudgetFactory.CreateMonthly(BudgetType.Digital_Movies, "Netflix", 10.95);
 			BudgetFactory.CreateMonthly(BudgetType.Digital_Movies, "CBS", 7.95);
+			BudgetFactory.CreateAnnual(BudgetType.Digital_Subscription, "Lastpass", 13.61, 4);
+			BudgetFactory.CreateWeekly(BudgetType.Personal, "Haircut", 60.00, 6, 2);
 
 			BudgetFactory.CreateAnnual(BudgetType.Entertainment_SportingEvents, "Mariners", 900.00, 1);
 			BudgetFactory.CreateAnnual(BudgetType.Entertainment_Movies, "SIFF", 600.00, 12);

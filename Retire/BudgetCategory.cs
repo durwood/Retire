@@ -32,7 +32,8 @@ namespace Retire
 		Utilities_InternetCable,
 		Utilities_WaterSewerWaste,
 		Gift,
-		Gift_FamilyFriends
+		Gift_FamilyFriends,
+		Personal
 	}
 
 	public class BudgetCategory

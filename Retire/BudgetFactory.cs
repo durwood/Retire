@@ -28,6 +28,11 @@ namespace Retire
 			_budget.AddEntry(new BudgetEntryAnnual(amount, month, label, budgetType));
 		}
 
+		internal static void CreateWeekly(BudgetType budgetType, string label, double amount, int period=1, int start=1)
+		{
+			_budget.AddEntry(new BudgetEntryWeekly(amount, label, budgetType, period, start));
+		}
+
 		public static Budget GetBudget()
 		{
 			return _budget;
@@ -45,6 +50,8 @@ namespace Retire
 			string label;
 			BudgetType budgetType;
 			int month;
+			int weekStart;
+			int weekPeriod;
 			switch (components[0])
 			{
 				case "Annual":
@@ -66,6 +73,12 @@ namespace Retire
 					GetCommonParameters(components.Skip(2).ToArray(), out amount, out label, out budgetType);
 					result = new BudgetEntryBiMonthly(amount, month, label, budgetType);
 					break;
+				case "Weekly":
+					weekStart = int.Parse(components[1]);
+					weekPeriod = int.Parse(components[2]);
+					GetCommonParameters(components.Skip(3).ToArray(), out amount, out label, out budgetType);
+					result = new BudgetEntryWeekly(amount, label, budgetType, weekPeriod, weekStart);
+					break;
 				default:
 					throw new ArgumentException($"Invalid Budget Entry Type {components[0]}");
 			}
@@ -78,5 +91,6 @@ namespace Retire
 			amount = double.Parse(components[1]);
 			label = components[2];
 		}
-	}
+
+}
 }
