@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Globalization;
@@ -78,7 +78,12 @@ namespace Retire
 
 		internal static Budget DeSerialize(string budgetString)
 		{
-			return JsonConvert.DeserializeObject<Budget>(budgetString);
+			var jsonSettings = new JsonSerializerSettings
+			{
+				TypeNameHandling = TypeNameHandling.All,
+				Formatting = Formatting.Indented
+			};
+			return JsonConvert.DeserializeObject<Budget>(budgetString, jsonSettings);
 		}
 
 		internal void Save(string fname)
