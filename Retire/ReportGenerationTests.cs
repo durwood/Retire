@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
@@ -82,7 +82,7 @@ namespace Retire
 			Assert.That(report.Month, Is.EqualTo(_report.Month));
 			var entries = report.GetReport();
 			Assert.That(entries["Auto"], Is.EqualTo(100.00));
-			Assert.That(entries["Income"], Is.EqualTo(300.00));
+			Assert.That(entries["Income_Salary"], Is.EqualTo(300.00));
 		}
 
 		[Test]
@@ -98,6 +98,27 @@ namespace Retire
 			Console.WriteLine(JsonConvert.SerializeObject(report));
 
 		}
+
+        [Test]
+        public void ReportAccumulatesIncomeAsAppropriateBasedOnWhetherDetailsArePreserved()
+        {
+			_report.AddExpenditure(BudgetType.Income, 100.00);
+			_report.AddExpenditure(BudgetType.Income_Salary, 300.00);
+
+            var report = _report.GetReport();
+            Assert.That(report.Count, Is.EqualTo(2));
+            Assert.That(report["Income"], Is.EqualTo(100.0));
+            Assert.That(report["Income_Salary"], Is.EqualTo(300.0));
+
+            report = _report.GetReport(incomeDetails: false);
+			Assert.That(report.Count, Is.EqualTo(1));
+			Assert.That(report["Income"], Is.EqualTo(400.0));
+        }
+
+        private static void PrintReport(Report report)
+        {
+            Console.WriteLine(JsonConvert.SerializeObject(report));
+        }
 	}
 
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -36,20 +36,24 @@ namespace Retire
 			{
 				var amount = kvp.Value;
 				var budgetCategory = new BudgetCategory(kvp.Key);
-				if (budgetCategory.MainCategory == "Income" && incomeDetails && !string.IsNullOrWhiteSpace(budgetCategory.SubCategory))
-					UpdateReport(report, budgetCategory.SubCategory, amount);
+				if (budgetCategory.MainCategory == "Income" && incomeDetails)
+					UpdateReport(report, amount, budgetCategory.MainCategory, budgetCategory.SubCategory);
 				else
-				   UpdateReport(report, budgetCategory.MainCategory, amount);
+				   UpdateReport(report, amount, budgetCategory.MainCategory);
 			}
 			return report;
 		}
 
-		private void UpdateReport(Dictionary<string, double> report, string category, double value)
+		private void UpdateReport(Dictionary<string, double> report, double value, string category, string subCategory = "")
 		{
-			if (report.ContainsKey(category))
-				report[category] += value;
-			else
-				report.Add(category, value);
+            var key = category;
+            if (!string.IsNullOrWhiteSpace(subCategory))
+                key = $"{category}_{subCategory}";
+
+            if (report.ContainsKey(key))
+                    report[key] += value;
+                else
+                    report.Add(key, value);
 		}
 
 		internal void Save(string fname)
