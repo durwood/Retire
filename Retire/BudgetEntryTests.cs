@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -209,6 +209,33 @@ namespace Retire
 			Assert.That(budget.MonthlyTotal(10), Is.EqualTo(40.00));
 			Assert.That(budget.MonthlyTotal(11), Is.EqualTo(50.00));
 			Assert.That(budget.MonthlyTotal(12), Is.EqualTo(40.00));
+		}
+
+        [Test]
+        public void WeeklySerializationSupportsMax()
+        {
+			var entry1 = new BudgetEntryWeekly(10, "Weekly", BudgetType.Personal, 1, "Jan 4", max:6);
+			_budget.AddEntry(entry1);
+			var budget = _budget;
+
+			Assert.That(budget.Total, Is.EqualTo(60.00));
+			Assert.That(budget.MonthlyTotal(1), Is.EqualTo(40.00));
+			Assert.That(budget.MonthlyTotal(2), Is.EqualTo(20.00));
+        }
+
+        [Test]
+        public void WeeklySerializeWorksForAllYears()
+        {
+			var entry1 = new BudgetEntryWeekly(10, "Weekly", BudgetType.Personal, 1, "Oct 12, 1955");
+			_budget.AddEntry(entry1);
+			var budget = _budget;
+
+			Assert.That(budget.Total, Is.EqualTo(120.00));
+			Assert.That(budget.MonthlyTotal(9), Is.EqualTo(0.00));
+			Assert.That(budget.MonthlyTotal(10), Is.EqualTo(30.00));
+			Assert.That(budget.MonthlyTotal(11), Is.EqualTo(50.00));
+			Assert.That(budget.MonthlyTotal(12), Is.EqualTo(40.00));
+            Assert.That(budget.MonthlyTotal(1), Is.EqualTo(0.00));
 		}
 }
 }

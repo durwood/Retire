@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -190,7 +190,8 @@ namespace Retire
 
 			//var date = new DateTime(2017, 1, 1);
 			var startDay = DateTime.Parse(Start);
-			var lastDate = DateTime.Parse("Dec 31, 2017");
+            var year = startDay.Year;
+            var lastDate = DateTime.Parse($"Dec 31, {year}");  // TODO: Fix this hardcoded value!
 			var dayPeriod = Period * 7;
 			var count = 0;
 			for (DateTime day = startDay; day <= lastDate && count++ < Max; day = day.AddDays(dayPeriod))
