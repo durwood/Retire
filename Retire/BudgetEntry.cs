@@ -176,29 +176,38 @@ namespace Retire
 		private int Period;
 
 		[JsonProperty]
-		private int Start;
+		private string Start;
+
+		[JsonProperty]
+		private int Max;
 
 		[JsonConstructor]
-		public BudgetEntryWeekly(double amount, string label, BudgetType budgetType, int period, int start) : base(amount, label, budgetType)
+		public BudgetEntryWeekly(double amount, string label, BudgetType budgetType, int period, string start, int max) : base(amount, label, budgetType)
 		{
 			Period = period;
 			Start = start;
+			Max = max;
 
-			var date = new DateTime(2017, 1, 1);
-			for (int week = start; week <= 52; week += period)
-			{
-				var curDate = date.AddDays(week * 7);
-				var month = curDate.Month;
-				_monthly[month] += Amount;                 
-			}
+			//var date = new DateTime(2017, 1, 1);
+			var startDay = DateTime.Parse(Start);
+			var lastDate = DateTime.Parse("Dec 31, 2017");
+			var dayPeriod = Period * 7;
+			var count = 0;
+			for (DateTime day = startDay; day <= lastDate && count++ < Max; day = day.AddDays(dayPeriod))
+				_monthly[day.Month] += Amount;                 
 		}
 
-		public BudgetEntryWeekly(double amount, string label, BudgetType budgetType, int period) : this(amount, label, budgetType, period, 1)
+		public BudgetEntryWeekly(double amount, string label, BudgetType budgetType, int period, string start) : this(amount, label, budgetType, period, start, 52)
+		{
+
+		}
+
+		public BudgetEntryWeekly(double amount, string label, BudgetType budgetType, int period) : this(amount, label, budgetType, period, "Jan 1")
 		{
 			
 		}
 
-		public BudgetEntryWeekly(double amount, string label, BudgetType budgetType) : this(amount, label, budgetType, 1, 1)
+		public BudgetEntryWeekly(double amount, string label, BudgetType budgetType) : this(amount, label, budgetType, 1, "Jan 1")
 		{
 		}
 
@@ -209,7 +218,7 @@ namespace Retire
 
 		public override string Serialize()
 		{
-			return $"Weekly,{Start},{Period}," + base.Serialize();
+			return $"Weekly,{Start},{Period},{Max}" + base.Serialize();
 		}
 	}
 }

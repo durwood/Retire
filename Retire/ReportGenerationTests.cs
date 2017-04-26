@@ -61,6 +61,8 @@ namespace Retire
 			_report.AddExpenditure(BudgetType.Income_Airbnb, 200);
 
 			var report = _report.GetReport();
+            Console.WriteLine(JsonConvert.SerializeObject(report));
+
 			Assert.That(report.Count, Is.EqualTo(2));
 			Assert.That(report[BudgetType.Income.ToString()], Is.EqualTo(100.00));
 			Assert.That(report[BudgetType.Income_Airbnb.ToString()], Is.EqualTo(200.00));

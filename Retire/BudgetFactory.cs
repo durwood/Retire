@@ -28,7 +28,7 @@ namespace Retire
 			_budget.AddEntry(new BudgetEntryAnnual(amount, month, label, budgetType));
 		}
 
-		internal static void CreateWeekly(BudgetType budgetType, string label, double amount, int period=1, int start=1)
+		internal static void CreateWeekly(BudgetType budgetType, string label, double amount, int period=1, string start="Jan 4")
 		{
 			_budget.AddEntry(new BudgetEntryWeekly(amount, label, budgetType, period, start));
 		}
@@ -50,7 +50,7 @@ namespace Retire
 			string label;
 			BudgetType budgetType;
 			int month;
-			int weekStart;
+			string weekStart;
 			int weekPeriod;
 			switch (components[0])
 			{
@@ -74,7 +74,7 @@ namespace Retire
 					result = new BudgetEntryBiMonthly(amount, month, label, budgetType);
 					break;
 				case "Weekly":
-					weekStart = int.Parse(components[1]);
+					weekStart = components[1];
 					weekPeriod = int.Parse(components[2]);
 					GetCommonParameters(components.Skip(3).ToArray(), out amount, out label, out budgetType);
 					result = new BudgetEntryWeekly(amount, label, budgetType, weekPeriod, weekStart);

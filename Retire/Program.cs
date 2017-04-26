@@ -45,7 +45,7 @@ namespace Retire
 			BudgetFactory.CreateBiMonthly(BudgetType.Utilities_WaterSewerWaste, "SPU", 190.00, 1);
 			BudgetFactory.CreateBiMonthly(BudgetType.Utilities_Electricity, "SCL", 80.00, 1);
 
-			BudgetFactory.CreateBiAnnual(BudgetType.Auto_Insurance, "BMW", 337.00, 4);
+			BudgetFactory.CreateBiAnnual(BudgetType.Auto_Insurance, "BMW", 463.00, 4);
 			BudgetFactory.CreateAnnual(BudgetType.Auto_Insurance, "Vespa", 389.00, 4);
 			BudgetFactory.CreateMonthly(BudgetType.Auto_Gas, "Gas", 60.00);
 
@@ -61,7 +61,8 @@ namespace Retire
 			BudgetFactory.CreateMonthly(BudgetType.Digital_Movies, "Netflix", 10.95);
 			BudgetFactory.CreateMonthly(BudgetType.Digital_Movies, "CBS", 7.95);
 			BudgetFactory.CreateAnnual(BudgetType.Digital_Subscription, "Lastpass", 13.61, 4);
-			BudgetFactory.CreateWeekly(BudgetType.Personal, "Haircut", 60.00, 6, 2);
+			BudgetFactory.CreateWeekly(BudgetType.Personal, "Haircut", 60.00, period:6, start:"Jan 11");
+			//BudgetFactory.CreateWeekly(BudgetType.Income_Unemployment, "WA Unemployment", 681.00, start:"Feb 11", period:1, count:26);
 
 			BudgetFactory.CreateAnnual(BudgetType.Entertainment_SportingEvents, "Mariners", 900.00, 1);
 			BudgetFactory.CreateAnnual(BudgetType.Entertainment_Movies, "SIFF", 600.00, 12);
