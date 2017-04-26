@@ -7,7 +7,7 @@ namespace Retire
 	// DONE Convert to using JSON for serizlization
 	// DONE Add year to report heading i.e 2/2017
 	// DONE Allow for Income details to be saved
-	// Add Income to budget (support weekly income, too?)
+	// DONE Add Income to budget (support weekly income, too?)
 	// Consider how to do budget category mapping and overall flow from Mint
 	// Allow for budgeted amounts to be included in report
 	//
@@ -17,16 +17,14 @@ namespace Retire
 		public static void Main(string[] args)
 		{
 			// PrintSpecialFolders();
-			var docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			var budgetPath = $"{docPath}/SaveMeBudget.txt";
-			var reportPath = $"{docPath}/SaveMeReport.txt";
 
-			var budget = CreateBudget("2017 Budget");
-			budget.Save(budgetPath);
+            var year = 2017;
+            var budget = CreateBudget(year);
+			budget.Save();
 			Console.WriteLine(budget);
 
-			var report = DoMonthlyReport();
-			report.Save(reportPath);
+			var report = DoMonthlyReport(year);
+			report.Save();
 		}
 
 		public static void PrintSpecialFolders()
@@ -37,8 +35,9 @@ namespace Retire
 			}
 		}
 
-		public static Budget CreateBudget(string title)
+		public static Budget CreateBudget(int year)
 		{
+            BudgetFactory.CreateBudget(year);
 			BudgetFactory.CreateMonthly(BudgetType.Home_Mortgage, "Mortgage", 2000);
 			BudgetFactory.CreateMonthly(BudgetType.Utilities_InternetCable, "Comcast", 242.00);
 			BudgetFactory.CreateMonthly(BudgetType.Utilities_Gas, "Gas", 90.00);
@@ -62,7 +61,7 @@ namespace Retire
 			BudgetFactory.CreateMonthly(BudgetType.Digital_Movies, "CBS", 7.95);
 			BudgetFactory.CreateAnnual(BudgetType.Digital_Subscription, "Lastpass", 13.61, 4);
 			BudgetFactory.CreateWeekly(BudgetType.Personal, "Haircut", 60.00, period:6, start:"Jan 11");
-			//BudgetFactory.CreateWeekly(BudgetType.Income_Unemployment, "WA Unemployment", 681.00, start:"Feb 11", period:1, count:26);
+		    BudgetFactory.CreateWeekly(BudgetType.Income_Unemployment, "WA Unemployment", 681.00, start:"Feb 11", period:1, max:26);
 
 			BudgetFactory.CreateAnnual(BudgetType.Entertainment_SportingEvents, "Mariners", 900.00, 1);
 			BudgetFactory.CreateAnnual(BudgetType.Entertainment_Movies, "SIFF", 600.00, 12);
@@ -74,14 +73,12 @@ namespace Retire
 			BudgetFactory.CreateAnnual(BudgetType.Gift_FamilyFriends, "Dan", 100, 8);
 
 			var budget = BudgetFactory.GetBudget();
-			budget.Title = title;
 			return budget;
 		}
 
-		public static Report DoMonthlyReport()
+		public static Report DoMonthlyReport(int year)
 		{
 			var month = GetMonth();
-			var year = GetYear();
 			var report = new Report(month, year);
 
 			AddIncome(report);

@@ -22,7 +22,6 @@ namespace Retire
 		public void CanSupportMonthlyBudgetEntries()
 		{
 			_budget.AddEntry(_monthlyEntry);
-			Assert.That(_budget.Title, Is.EqualTo("TestBudget"));
 			Assert.That(_budget.Total, Is.EqualTo(360.00));
 			Assert.That(_budget.MonthlyTotal(1), Is.EqualTo(30.00));
 			Assert.That(_budget.MonthlyTotal(12), Is.EqualTo(30.00));
@@ -35,7 +34,6 @@ namespace Retire
 
 			_budget.AddEntry(_monthlyEntry);
 			_budget.AddEntry(anotherMonthly);
-			Assert.That(_budget.Title, Is.EqualTo("TestBudget"));
 			Assert.That(_budget.Total, Is.EqualTo((30.00 + 25.00) * 12));
 			Assert.That(_budget.MonthlyTotal(3), Is.EqualTo(30.00 + 25.00));
 		}
@@ -120,7 +118,7 @@ namespace Retire
 		{
 			var jsonSettings = new JsonSerializerSettings
 			{
-				TypeNameHandling = TypeNameHandling.All
+				TypeNameHandling = TypeNameHandling.Auto
 			};
 
 			List<BudgetEntry> input = new List<BudgetEntry>();
@@ -129,20 +127,16 @@ namespace Retire
 			input.Add(new BudgetEntryAnnual(50, 2, "Feb", BudgetType.Entertainment_SportingEvents));
 			input.Add(new BudgetEntryBiAnnual(30.0, 3, "Mar_Sep", BudgetType.Auto_Insurance));
 			input.Add(new BudgetEntryWeekly(300, "FooBar", BudgetType.Personal, 6, "Jan 4"));
+
 			var json = JsonConvert.SerializeObject(input, Formatting.Indented,jsonSettings );
+			// Console.WriteLine(json);
 			var result = JsonConvert.DeserializeObject<List<BudgetEntry>>(json, jsonSettings );
+
 			Assert.That(result[0], Is.TypeOf(typeof(BudgetEntryMonthly)));
 			Assert.That(result[1], Is.TypeOf(typeof(BudgetEntryBiMonthly)));
 			Assert.That(result[2], Is.TypeOf(typeof(BudgetEntryAnnual)));
 		    Assert.That(result[3], Is.TypeOf(typeof(BudgetEntryBiAnnual)));
 			Assert.That(result[4], Is.TypeOf(typeof(BudgetEntryWeekly)));
-			Console.WriteLine(json);
-
-			CreateSerializedTestBudget();
-			json = JsonConvert.SerializeObject(_budget, Formatting.Indented, jsonSettings);
-			var budget = JsonConvert.DeserializeObject<Budget>(json, jsonSettings);
-			Assert.That(_budget.Total, Is.EqualTo(budget.Total));
-			Console.WriteLine(json);
 		}
 
 		[Test]
@@ -150,9 +144,11 @@ namespace Retire
 		{
 			CreateSerializedTestBudget();
 			ValidateSerializedTestBudget(_budget);
+
 			var budgetString = _budget.Serialize();
 			Console.WriteLine(budgetString);
 			var budget = Budget.DeSerialize(budgetString);
+
 			ValidateSerializedTestBudget(budget);
 		}
 

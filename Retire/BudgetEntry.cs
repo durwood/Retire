@@ -188,10 +188,8 @@ namespace Retire
 			Start = start;
 			Max = max;
 
-			//var date = new DateTime(2017, 1, 1);
 			var startDay = DateTime.Parse(Start);
-            var year = startDay.Year;
-            var lastDate = DateTime.Parse($"Dec 31, {year}");  // TODO: Fix this hardcoded value!
+            var lastDate = DateTime.Parse($"Dec 31, {startDay.Year}");
 			var dayPeriod = Period * 7;
 			var count = 0;
 			for (DateTime day = startDay; day <= lastDate && count++ < Max; day = day.AddDays(dayPeriod))

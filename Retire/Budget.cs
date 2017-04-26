@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Globalization;
@@ -7,88 +7,110 @@ using Newtonsoft.Json;
 
 namespace Retire
 {
-	class Budget
-	{
-		public string Title { get; set; }
+    class Budget
+    {
+        public int Year { get; private set; }
+        public string User { get; private set; }
 
-		public double Total { get; private set; }
+        [JsonIgnore]
+        public string Title { get; private set; }
+        [JsonIgnore]
+        public double Total { get; private set; }
 
-		[JsonProperty]
-		List<BudgetEntry> BudgetEntries = new List<BudgetEntry>();
+        [JsonProperty]
+        List<BudgetEntry> BudgetEntries = new List<BudgetEntry>();
 
-		Dictionary<int, double> _monthlyTotals = new Dictionary<int, double>();
+        Dictionary<int, double> _monthlyTotals = new Dictionary<int, double>();
 
-		public Budget()
+		private static JsonSerializerSettings _jsonSettings = new JsonSerializerSettings
 		{
+			TypeNameHandling = TypeNameHandling.Auto,
+			Formatting = Formatting.Indented
+		};
+
+        [JsonConstructor]
+        public Budget(string user, int year, List<BudgetEntry> budgetEntries)
+        {
+			User = user;
+            Year = year > 0 ? year : DateTime.Now.Year;
+            Title = this.GetTitle();
 			for (int ii = 1; ii <= 12; ++ii)
 				_monthlyTotals.Add(ii, 0.0);
-		}
-
-		[JsonConstructor]
-		public Budget(string title, List<BudgetEntry> budgetEntries) : this()
-		{
 			foreach (var entry in budgetEntries)
-				AddEntry(entry);
-			Title = title;
+                AddEntry(entry);
+            Console.WriteLine(_monthlyTotals);
+        }
+
+        public Budget(string user, int year) : this(user, year, new List<BudgetEntry>())
+        {
 		}
 
-		public Budget(string title) : this()
+        public Budget(int year) : this("", year)
 		{
-			Title = title;
 		}
 
-		public void AddEntry(BudgetEntry budgetEntry)
+		public Budget(string user) : this(user, 0)
 		{
-			BudgetEntries.Add(budgetEntry);
-			for (int ii = 1; ii <= 12; ++ii)
-			{
-				var monthlyEntry = budgetEntry.GetMonthEntry(ii);
-				_monthlyTotals[ii] += monthlyEntry;
-				Total += monthlyEntry;
-			}
 		}
 
-		public double MonthlyTotal(int month)
-		{
-			return _monthlyTotals[month];
-		}
+        private string GetTitle()
+        {
+            var title = "budget";
+            if (Year != 0)
+                title = $"{Year}_{title}";
+            if (!string.IsNullOrWhiteSpace(User))
+                title = $"{User}_{title}";
+            return title;
+        }
 
-		public override string ToString()
-		{
-			var sb = new StringBuilder();
-			sb.AppendLine($"{this.Title}");
-			for (int ii=1; ii <= 12; ++ii)
-			{
-				var month = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(ii); // .GetMonthName(ii);
-				sb.AppendLine($"{month,6}: {MonthlyTotal(ii),10:C2}");
-			}
-			sb.AppendLine($"{"Total",6}: {Total,10:C2}");
-			return sb.ToString();
-		}
+        public void AddEntry(BudgetEntry budgetEntry)
+        {
+            BudgetEntries.Add(budgetEntry);
+            for (int ii = 1; ii <= 12; ++ii)
+            {
+                var monthlyEntry = budgetEntry.GetMonthEntry(ii);
+                _monthlyTotals[ii] += monthlyEntry;
+                Total += monthlyEntry;
+            }
+        }
 
-		internal string Serialize()
-		{
-			var jsonSettings = new JsonSerializerSettings
-			{
-				TypeNameHandling = TypeNameHandling.All,
-				Formatting = Formatting.Indented
-			};
-			return JsonConvert.SerializeObject(this, jsonSettings);
-		}
+        public double MonthlyTotal(int month)
+        {
+            return _monthlyTotals[month];
+        }
 
-		internal static Budget DeSerialize(string budgetString)
-		{
-			var jsonSettings = new JsonSerializerSettings
-			{
-				TypeNameHandling = TypeNameHandling.All,
-				Formatting = Formatting.Indented
-			};
-			return JsonConvert.DeserializeObject<Budget>(budgetString, jsonSettings);
-		}
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"{Title}");
+            for (int ii = 1; ii <= 12; ++ii)
+            {
+                var month = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(ii); // .GetMonthName(ii);
+                sb.AppendLine($"{month,6}: {MonthlyTotal(ii),10:C2}");
+            }
+            sb.AppendLine($"{"Total",6}: {Total,10:C2}");
+            return sb.ToString();
+        }
 
-		internal void Save(string fname)
-		{
-			File.WriteAllText(fname, Serialize());
-		}
-}
+        internal string Serialize()
+        {
+            return JsonConvert.SerializeObject(this, _jsonSettings);
+        }
+
+        internal static Budget DeSerialize(string budgetString)
+        {
+            return JsonConvert.DeserializeObject<Budget>(budgetString, _jsonSettings);
+        }
+
+        internal void Save(string location = "")
+        {
+            var directory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (!string.IsNullOrWhiteSpace(location))
+                directory = Path.Combine(directory, location);
+
+            var fname = $"{Title}.json";
+            var fullpath = Path.Combine(directory, fname);
+            File.WriteAllText(fullpath, Serialize());
+        }
+    }
 }

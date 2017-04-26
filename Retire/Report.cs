@@ -36,7 +36,8 @@ namespace Retire
 			{
 				var amount = kvp.Value;
 				var budgetCategory = new BudgetCategory(kvp.Key);
-				if (budgetCategory.MainCategory == "Income" && incomeDetails)
+
+                if (budgetCategory.MainCategory == "Income" && incomeDetails)
 					UpdateReport(report, amount, budgetCategory.MainCategory, budgetCategory.SubCategory);
 				else
 				   UpdateReport(report, amount, budgetCategory.MainCategory);
@@ -56,9 +57,15 @@ namespace Retire
                     report.Add(key, value);
 		}
 
-		internal void Save(string fname)
+		internal void Save(string location = "")
 		{
-			File.WriteAllText(fname, Serialize());
+            var directory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (!string.IsNullOrWhiteSpace(location))
+                directory = Path.Combine(directory, location);
+            
+            var fname = $"{Year}_{Month:D2}_report.json";
+            var fullpath = Path.Combine(directory, fname);
+			File.WriteAllText(fullpath, Serialize());
 		}
 
 		internal string Serialize()

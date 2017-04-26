@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,10 +28,15 @@ namespace Retire
 			_budget.AddEntry(new BudgetEntryAnnual(amount, month, label, budgetType));
 		}
 
-		internal static void CreateWeekly(BudgetType budgetType, string label, double amount, int period=1, string start="Jan 4")
+		internal static void CreateWeekly(BudgetType budgetType, string label, double amount, int period=1, string start="Jan 4", int max=52)
 		{
-			_budget.AddEntry(new BudgetEntryWeekly(amount, label, budgetType, period, start));
+			_budget.AddEntry(new BudgetEntryWeekly(amount, label, budgetType, period, start, max));
 		}
+
+        public static void CreateBudget(int year)
+        {
+            _budget = new Budget(year);
+        }
 
 		public static Budget GetBudget()
 		{
@@ -40,7 +45,6 @@ namespace Retire
 
 		static BudgetFactory()
 		{
-			_budget = new Budget();
 		}
 
 		public static BudgetEntry CreateBudgetEntry(string[] components)
