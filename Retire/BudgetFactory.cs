@@ -47,75 +47,74 @@ namespace Retire
 		{
 		}
 
-        private static string[] GetValueAndAdvance(string[] inputs, out string output)
+        private static void GetNextValueAndAdvance(ref string[] inputs, out string output)
         {
             output = inputs[0];
-            return inputs.Skip(1).ToArray();
+            inputs = inputs.Skip(1).ToArray();
         }
 
-		private static string[] GetValueAndAdvance(string[] inputs, out int output)
+        private static void GetNextValueAndAdvance(ref string[] inputs, out int output)
 		{
             output = int.Parse(inputs[0]);
-			return inputs.Skip(1).ToArray();
+			inputs = inputs.Skip(1).ToArray();
 		}
 
-		public static BudgetEntry CreateBudgetEntry(string[] components)
+		static void GetCommonParameters(ref string[] components, out double amount, out string label, out BudgetType budgetType)
+		{
+			budgetType = BudgetCategoryFactory.DeSerialize(components[0]);
+			amount = double.Parse(components[1]);
+			label = components[2];
+			components = components.Skip(3).ToArray();
+		}
+
+		public static BudgetEntry CreateBudgetEntry(params string[] components)
 		{
 			BudgetEntry result = null;
+
 			double amount;
 			string label;
 			BudgetType budgetType;
 			int month;
             string dayStart;
 			int weekPeriod;
-            string type;
-            components = GetValueAndAdvance(components, out type);
+            int weekMax;
 
+            string type;
+            GetNextValueAndAdvance(ref components, out type);
+			GetCommonParameters(ref components, out amount, out label, out budgetType);
 			switch (type)
 			{
 
+
 				case "Annual":
-                    components = GetValueAndAdvance(components, out month);
-					GetCommonParameters(components, out amount, out label, out budgetType);
+                    GetNextValueAndAdvance(ref components, out month);
 					result = new BudgetEntryAnnual(amount, month, label, budgetType);
 					break;
 				case "BiAnnual":
-					components = GetValueAndAdvance(components, out month);
-					GetCommonParameters(components, out amount, out label, out budgetType);
+					GetNextValueAndAdvance(ref components, out month);
 					result = new BudgetEntryBiAnnual(amount, month, label, budgetType);
 					break;
 				case "Monthly":
-					GetCommonParameters(components, out amount, out label, out budgetType);
 					result = new BudgetEntryMonthly(amount, label, budgetType);
 					break;
 				case "BiMonthly":
-					components = GetValueAndAdvance(components, out month);
-					GetCommonParameters(components, out amount, out label, out budgetType);
+					GetNextValueAndAdvance(ref components, out month);
 					result = new BudgetEntryBiMonthly(amount, month, label, budgetType);
 					break;
 				case "Weekly":
-					components = GetValueAndAdvance(components, out dayStart);
-					components = GetValueAndAdvance(components, out weekPeriod);
-					GetCommonParameters(components, out amount, out label, out budgetType);
-					result = new BudgetEntryWeekly(amount, label, budgetType, weekPeriod, dayStart);
+					GetNextValueAndAdvance(ref components, out dayStart);
+					GetNextValueAndAdvance(ref components, out weekPeriod);
+                    GetNextValueAndAdvance(ref components, out weekMax);
+					result = new BudgetEntryWeekly(amount, label, budgetType, weekPeriod, dayStart, weekMax);
 					break;
-				case "daily":
-					components = GetValueAndAdvance(components, out dayStart);
-					GetCommonParameters(components, out amount, out label, out budgetType);
+				case "Daily":
+					GetNextValueAndAdvance(ref components, out dayStart);
 					result = new BudgetEntryDaily(amount, label, budgetType, dayStart);
 					break;
 				default:
-					throw new ArgumentException($"Invalid Budget Entry Type {components[0]}");
+					throw new ArgumentException($"Invalid Budget Entry Type {type}");
 			}
 			return result;
 		}
-
-		static void GetCommonParameters(string [] components, out double amount, out string label, out BudgetType budgetType)
-		{
-			budgetType = BudgetCategoryFactory.DeSerialize(components[0]);
-			amount = double.Parse(components[1]);
-			label = components[2];
-		}
-
 }
 }

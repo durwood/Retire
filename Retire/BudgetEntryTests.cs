@@ -1,11 +1,11 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Retire
 {
-	[TestFixture]
+    [TestFixture]
 	public class BudgetTests
 	{
 		private Budget _budget;
@@ -121,6 +121,8 @@ namespace Retire
 			Assert.That(_budget.MonthlyTotal(9), Is.EqualTo(0.0));
 			Assert.That(_budget.Total, Is.EqualTo(17706));
 		}
+
+
 
 		[Test]
 		public void CanJsonSerializeBudgetEntries()
