@@ -178,6 +178,7 @@ namespace Retire
 			entries.Add(new BudgetEntryBiAnnual(60.00, 5, "Progressive BMW", BudgetType.Auto_Insurance));
 			entries.Add(new BudgetEntryMonthly(70.00, "Misc Utility", BudgetType.Utilities));
 			entries.Add(new BudgetEntryWeekly(10, "Weekly", BudgetType.Personal, 1, "Jan 4"));
+            entries.Add(new BudgetEntryDaily(50, "Daily", BudgetType.Personal, "Jan 1"));
             foreach (var entry in entries)
 			    _budget.AddEntry(entry);
 		}
