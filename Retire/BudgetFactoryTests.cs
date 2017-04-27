@@ -5,6 +5,12 @@ namespace Retire
 	[TestFixture]
 	public class BudgetFactoryTests
 	{
+        [SetUp]
+        public void SetUp()
+        {
+            BudgetFactory.CreateBudget(2017, "AnyOldUser");
+        }
+
 		[Test]
 		public void CreateBudgetEntryTests()
 		{
@@ -25,6 +31,48 @@ namespace Retire
 
 			budgetEntry = BudgetFactory.CreateBudgetEntry("Daily", "Personal", "10", "dailyExample", "Jan 1");
 			Assert.That(budgetEntry, Is.TypeOf(typeof(BudgetEntryDaily)));
+		}
+
+        [Test]
+        public void CanCreateEmptyBudget()
+        {
+			BudgetFactory.CreateBudget(2017, "AnyOldUser");
+            var budget = BudgetFactory.GetBudget();
+            Assert.That(budget, Is.TypeOf(typeof(Budget)));
+            Assert.That(budget.Total, Is.EqualTo(0.0));
+
+		}
+
+        [Test]
+        public void CanCreateMonthlyBudget()
+        {
+			BudgetFactory.CreateMonthly(BudgetType.Home_Mortgage, "Mortgage", 2000);
+            var budget = BudgetFactory.GetBudget();
+            Assert.That(budget.Total, Is.EqualTo(12 * 2000.0));
+		}
+
+		[Test]
+		public void CanCreateAnnualBudget()
+		{
+			BudgetFactory.CreateAnnual(BudgetType.Auto_Insurance, "Vespa", 300.00, 4);
+			var budget = BudgetFactory.GetBudget();
+			Assert.That(budget.Total, Is.EqualTo(300.0));
+		}
+
+		[Test]
+		public void CanCreateBiAnnualBudget()
+		{
+			BudgetFactory.CreateBiAnnual(BudgetType.Auto_Insurance, "BMW", 400.00, 4);
+			var budget = BudgetFactory.GetBudget();
+			Assert.That(budget.Total, Is.EqualTo(2 * 400.0));
+		}
+
+		[Test]
+		public void CanCreateWeeklyBudget()
+		{
+			BudgetFactory.CreateWeekly(BudgetType.Personal, "Dues", 10.00, period:1, start:"Jan 4, 2017");
+			var budget = BudgetFactory.GetBudget();
+			Assert.That(budget.Total, Is.EqualTo(52 * 10.0));
 		}
 	}
 }
