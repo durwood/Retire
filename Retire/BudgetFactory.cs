@@ -33,6 +33,11 @@ namespace Retire
 			_budget.AddEntry(new BudgetEntryWeekly(amount, label, budgetType, period, start, max));
 		}
 
+        internal static void CreateDaily(BudgetType budgetType, string label, double amount, string start="Jan 1")
+        {
+            _budget.AddEntry(new BudgetEntryDaily(amount, label, budgetType, start));
+        }
+
         public static void CreateBudget(int year, string user="")
         {
             _budget = new Budget(year, user);

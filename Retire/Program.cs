@@ -86,7 +86,7 @@ namespace Retire
 
 			BudgetFactory.CreateMonthly(BudgetType.Medical_Insurance, "Regence", 749.00);
 
-			// TBD: BudgetFactory.CreateDaily(BudgetType.Dining, "Food", 50.00);
+			BudgetFactory.CreateDaily(BudgetType.Personal_Dining, "Food", 50.00);
 
 			BudgetFactory.CreateMonthly(BudgetType.Digital_Music, "EchoDot", 3.99);
 			BudgetFactory.CreateAnnual(BudgetType.Digital_Music, "AmazonCloud", 24.99, 2);

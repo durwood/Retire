@@ -15,6 +15,8 @@ namespace Retire
 		Entertainment,
 		Entertainment_Movies,
 		Entertainment_SportingEvents,
+		Gift,
+		Gift_FamilyFriends,
 		Home,
 		Home_Mortgage,
 		Income,
@@ -24,16 +26,15 @@ namespace Retire
 		Income_Misc,
 		Medical,
 		Medical_Insurance,
+        Personal,
+        Personal_Dining,
 		Shopping,
 		Shopping_Subscription,
 		Utilities,
 		Utilities_Electricity,
 		Utilities_Gas, 
 		Utilities_InternetCable,
-		Utilities_WaterSewerWaste,
-		Gift,
-		Gift_FamilyFriends,
-		Personal
+		Utilities_WaterSewerWaste
 	}
 
 	public class BudgetCategory

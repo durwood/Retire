@@ -74,5 +74,13 @@ namespace Retire
 			var budget = BudgetFactory.GetBudget();
 			Assert.That(budget.Total, Is.EqualTo(52 * 10.0));
 		}
+
+		[Test]
+		public void CanCreateDailyBudget()
+		{
+			BudgetFactory.CreateDaily(BudgetType.Personal, "Food", 10.00, "Jan 1, 2017");
+			var budget = BudgetFactory.GetBudget();
+			Assert.That(budget.Total, Is.EqualTo(365 * 10.0));
+		}
 	}
 }
