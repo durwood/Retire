@@ -136,9 +136,10 @@ namespace Retire
 			input.Add(new BudgetEntryAnnual(50, 2, "Feb", BudgetType.Entertainment_SportingEvents));
 			input.Add(new BudgetEntryBiAnnual(30.0, 3, "Mar_Sep", BudgetType.Auto_Insurance));
 			input.Add(new BudgetEntryWeekly(300, "FooBar", BudgetType.Personal, 6, "Jan 4"));
+            input.Add(new BudgetEntryDaily(50, "LifeBlood", BudgetType.Personal, "Jan 1"));
 
 			var json = JsonConvert.SerializeObject(input, Formatting.Indented,jsonSettings );
-			// Console.WriteLine(json);
+			Console.WriteLine(json);
 			var result = JsonConvert.DeserializeObject<List<BudgetEntry>>(json, jsonSettings );
 
 			Assert.That(result[0], Is.TypeOf(typeof(BudgetEntryMonthly)));
@@ -146,6 +147,7 @@ namespace Retire
 			Assert.That(result[2], Is.TypeOf(typeof(BudgetEntryAnnual)));
 		    Assert.That(result[3], Is.TypeOf(typeof(BudgetEntryBiAnnual)));
 			Assert.That(result[4], Is.TypeOf(typeof(BudgetEntryWeekly)));
+            Assert.That(result[5], Is.TypeOf(typeof(BudgetEntryDaily)));
 		}
 
 		[Test]
