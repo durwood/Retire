@@ -58,8 +58,17 @@ namespace Retire
         public void CanGetExpenseTotal()
         {
             _report.AddExpenditure(BudgetType.Income, 1000);
-            _report.AddExpenditure(BudgetType.Auto, 200);
-            Assert.That(_report.Expenses, Is.EqualTo(200));
+            _report.AddExpenditure(BudgetType.Auto_Gas, 50);
+            _report.AddExpenditure(BudgetType.Auto_Insurance, 300);
+            Assert.That(_report.Expenses, Is.EqualTo(350));
+        }
+
+        [Test]
+        public void CanGetIncomeTotal()
+        {
+            _report.AddExpenditure(BudgetType.Income_Airbnb, 200);
+            _report.AddExpenditure(BudgetType.Income_Salary, 2000);
+            Assert.That(_report.Income, Is.EqualTo(2200.0));
         }
 
 		[Test]

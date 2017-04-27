@@ -14,7 +14,10 @@ namespace Retire
         public string User { get; private set; }
         [JsonIgnore]
         public string Title { get; private set; }
+        [JsonIgnore]
         public double Expenses { get; internal set; }
+        [JsonIgnore]
+        public double Income { get; internal set; }
 
         [JsonProperty]
 		private Dictionary<BudgetType, double> Entries = new Dictionary<BudgetType, double>();
@@ -42,13 +45,15 @@ namespace Retire
 
 		internal void AddExpenditure(BudgetType type, double amount)
 		{
-            if (BudgetCategory.IsExpense(type))
+            if (BudgetCategory.IsIncome(type))
+                Income += amount;
+            else
                 Expenses += amount;
 
             if (Entries.ContainsKey(type))
-                    Entries[type] += amount;
-                else
-                    Entries.Add(type, amount);
+                Entries[type] += amount;
+            else
+                Entries.Add(type, amount);
 		}
 
 		public Dictionary<string, double> GetReport(bool incomeDetails = true)

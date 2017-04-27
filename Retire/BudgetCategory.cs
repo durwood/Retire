@@ -53,9 +53,9 @@ namespace Retire
 			SubCategory = mainAndSub.Length > 1 ? mainAndSub[1] : "";
 		}
 
-        public static bool IsExpense(BudgetType type)
+        public static bool IsIncome(BudgetType type)
         {
-            return new BudgetCategory(type).MainCategory != "Income";
+            return new BudgetCategory(type).MainCategory == "Income";
         }
 
 		public override string ToString()

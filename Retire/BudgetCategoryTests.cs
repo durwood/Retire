@@ -102,10 +102,10 @@ namespace Retire
 		}
 
         [Test]
-        public void IsExpenseWorks()
+        public void IsIncomeWorks()
         {
-            Assert.That(BudgetCategory.IsExpense(BudgetType.Income_Misc), Is.Not.True);
-            Assert.That(BudgetCategory.IsExpense(BudgetType.Auto_Gas), Is.True);
+            Assert.That(BudgetCategory.IsIncome(BudgetType.Income_Misc), Is.True);
+            Assert.That(BudgetCategory.IsIncome(BudgetType.Auto_Gas), Is.False);
         }
 	}
 	
