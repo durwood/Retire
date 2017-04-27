@@ -47,6 +47,18 @@ namespace Retire
 		{
 		}
 
+        private static string[] GetValueAndAdvance(string[] inputs, out string output)
+        {
+            output = inputs[0];
+            return inputs.Skip(1).ToArray();
+        }
+
+		private static string[] GetValueAndAdvance(string[] inputs, out int output)
+		{
+            output = int.Parse(inputs[0]);
+			return inputs.Skip(1).ToArray();
+		}
+
 		public static BudgetEntry CreateBudgetEntry(string[] components)
 		{
 			BudgetEntry result = null;
@@ -54,34 +66,43 @@ namespace Retire
 			string label;
 			BudgetType budgetType;
 			int month;
-			string weekStart;
+            string dayStart;
 			int weekPeriod;
-			switch (components[0])
+            string type;
+            components = GetValueAndAdvance(components, out type);
+
+			switch (type)
 			{
+
 				case "Annual":
-					month = int.Parse(components[1]);
-					GetCommonParameters(components.Skip(2).ToArray(), out amount, out label, out budgetType);
+                    components = GetValueAndAdvance(components, out month);
+					GetCommonParameters(components, out amount, out label, out budgetType);
 					result = new BudgetEntryAnnual(amount, month, label, budgetType);
 					break;
 				case "BiAnnual":
-					month = int.Parse(components[1]);
-					GetCommonParameters(components.Skip(2).ToArray(), out amount, out label, out budgetType);
+					components = GetValueAndAdvance(components, out month);
+					GetCommonParameters(components, out amount, out label, out budgetType);
 					result = new BudgetEntryBiAnnual(amount, month, label, budgetType);
 					break;
 				case "Monthly":
-					GetCommonParameters(components.Skip(1).ToArray(), out amount, out label, out budgetType);
+					GetCommonParameters(components, out amount, out label, out budgetType);
 					result = new BudgetEntryMonthly(amount, label, budgetType);
 					break;
 				case "BiMonthly":
-					month = int.Parse(components[1]);
-					GetCommonParameters(components.Skip(2).ToArray(), out amount, out label, out budgetType);
+					components = GetValueAndAdvance(components, out month);
+					GetCommonParameters(components, out amount, out label, out budgetType);
 					result = new BudgetEntryBiMonthly(amount, month, label, budgetType);
 					break;
 				case "Weekly":
-					weekStart = components[1];
-					weekPeriod = int.Parse(components[2]);
-					GetCommonParameters(components.Skip(3).ToArray(), out amount, out label, out budgetType);
-					result = new BudgetEntryWeekly(amount, label, budgetType, weekPeriod, weekStart);
+					components = GetValueAndAdvance(components, out dayStart);
+					components = GetValueAndAdvance(components, out weekPeriod);
+					GetCommonParameters(components, out amount, out label, out budgetType);
+					result = new BudgetEntryWeekly(amount, label, budgetType, weekPeriod, dayStart);
+					break;
+				case "daily":
+					components = GetValueAndAdvance(components, out dayStart);
+					GetCommonParameters(components, out amount, out label, out budgetType);
+					result = new BudgetEntryDaily(amount, label, budgetType, dayStart);
 					break;
 				default:
 					throw new ArgumentException($"Invalid Budget Entry Type {components[0]}");
