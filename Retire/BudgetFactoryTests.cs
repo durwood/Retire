@@ -47,40 +47,53 @@ namespace Retire
         public void CanCreateMonthlyBudget()
         {
 			BudgetFactory.CreateMonthly(BudgetType.Home_Mortgage, "Mortgage", 2000);
-            var budget = BudgetFactory.GetBudget();
-            Assert.That(budget.Total, Is.EqualTo(12 * 2000.0));
+            Assert.That(BudgetFactory.GetBudget().Total, Is.EqualTo(12 * 2000.0));
 		}
 
 		[Test]
 		public void CanCreateAnnualBudget()
 		{
 			BudgetFactory.CreateAnnual(BudgetType.Auto_Insurance, "Vespa", 300.00, 4);
-			var budget = BudgetFactory.GetBudget();
-			Assert.That(budget.Total, Is.EqualTo(300.0));
+            Assert.That(BudgetFactory.GetBudget().Total, Is.EqualTo(300.0));
 		}
 
 		[Test]
 		public void CanCreateBiAnnualBudget()
 		{
 			BudgetFactory.CreateBiAnnual(BudgetType.Auto_Insurance, "BMW", 400.00, 4);
-			var budget = BudgetFactory.GetBudget();
-			Assert.That(budget.Total, Is.EqualTo(2 * 400.0));
+            Assert.That(BudgetFactory.GetBudget().Total, Is.EqualTo(2 * 400.0));
 		}
 
 		[Test]
 		public void CanCreateWeeklyBudget()
 		{
-			BudgetFactory.CreateWeekly(BudgetType.Personal, "Dues", 10.00, period:1, start:"Jan 4, 2017");
-			var budget = BudgetFactory.GetBudget();
-			Assert.That(budget.Total, Is.EqualTo(52 * 10.0));
+			BudgetFactory.CreateWeekly(BudgetType.Personal, "Dues", 10.00);
+			Assert.That(BudgetFactory.GetBudget().Total, Is.EqualTo(52 * 10.0));
+
+			BudgetFactory.CreateBudget(2017);
+			BudgetFactory.CreateWeekly(BudgetType.Personal, "Dues", 10.00, period: 2);
+			Assert.That(BudgetFactory.GetBudget().Total, Is.EqualTo(26 * 10.0));
+
+			BudgetFactory.CreateBudget(2017);
+			BudgetFactory.CreateWeekly(BudgetType.Personal, "Dues", 10.00, period: 1, start: "Jan 10, 2017");
+			Assert.That(BudgetFactory.GetBudget().Total, Is.EqualTo(51 * 10.0));
+
+			BudgetFactory.CreateBudget(2017);
+			BudgetFactory.CreateWeekly(BudgetType.Personal, "Dues", 10.00, period:1, start:"Jan 1, 2017", max: 51);
+            Assert.That(BudgetFactory.GetBudget().Total, Is.EqualTo(51 * 10.0));
 		}
 
 		[Test]
 		public void CanCreateDailyBudget()
 		{
-			BudgetFactory.CreateDaily(BudgetType.Personal, "Food", 10.00, "Jan 1, 2017");
+			BudgetFactory.CreateDaily(BudgetType.Personal, "Food", 10.00);
 			var budget = BudgetFactory.GetBudget();
 			Assert.That(budget.Total, Is.EqualTo(365 * 10.0));
+
+            BudgetFactory.CreateBudget(2017);
+            BudgetFactory.CreateDaily(BudgetType.Personal, "Food", 10.00, "Jan 2, 2017");
+            Assert.That(BudgetFactory.GetBudget().Total, Is.EqualTo(364.0 * 10.0));
+
 		}
 	}
 }
