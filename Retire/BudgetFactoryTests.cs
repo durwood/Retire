@@ -2,7 +2,8 @@
 
 namespace Retire
 {
-	[TestFixture]
+
+    [TestFixture]
 	public class BudgetFactoryTests
 	{
         [SetUp]

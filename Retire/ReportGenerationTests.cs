@@ -54,6 +54,14 @@ namespace Retire
 
 		}
 
+        [Test]
+        public void CanGetExpenseTotal()
+        {
+            _report.AddExpenditure(BudgetType.Income, 1000);
+            _report.AddExpenditure(BudgetType.Auto, 200);
+            Assert.That(_report.Expenses, Is.EqualTo(200));
+        }
+
 		[Test]
 		public void CanAccumulateDetailedIncomeCategories()
 		{

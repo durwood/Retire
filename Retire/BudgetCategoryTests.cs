@@ -100,6 +100,13 @@ namespace Retire
 			var budgetTypeString = BudgetCategoryFactory.Serialize(budgetType);
 			Assert.That(budgetTypeString, Is.EqualTo("Income"));
 		}
+
+        [Test]
+        public void IsExpenseWorks()
+        {
+            Assert.That(BudgetCategory.IsExpense(BudgetType.Income_Misc), Is.Not.True);
+            Assert.That(BudgetCategory.IsExpense(BudgetType.Auto_Gas), Is.True);
+        }
 	}
 	
 }

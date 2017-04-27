@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
             
 namespace Retire
@@ -8,15 +8,17 @@ namespace Retire
 		Auto,
 		Auto_Gas,
 		Auto_Insurance,
-		Digital,
-		Digital_Movies,
-		Digital_Music,
-		Digital_Subscription,
+        Media,
+		Media_Movies,
+		Media_Music,
+		Media_Subscription,
 		Entertainment,
 		Entertainment_Movies,
 		Entertainment_SportingEvents,
 		Gift,
+        Gift_Donation,
 		Gift_FamilyFriends,
+        Gift_Tribute,
 		Home,
 		Home_Mortgage,
 		Income,
@@ -50,6 +52,11 @@ namespace Retire
 			MainCategory = mainAndSub[0];
 			SubCategory = mainAndSub.Length > 1 ? mainAndSub[1] : "";
 		}
+
+        public static bool IsExpense(BudgetType type)
+        {
+            return new BudgetCategory(type).MainCategory != "Income";
+        }
 
 		public override string ToString()
 		{

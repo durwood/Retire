@@ -8,7 +8,8 @@ namespace Retire
 	// DONE Add year to report heading i.e 2/2017
 	// DONE Allow for Income details to be saved
 	// DONE Add Income to budget (support weekly income, too?)
-    // Create Daily Entry?
+    // DONE Create Daily Entry?
+    // Build out Report functionality a bit by adding Expenses and Income query
 	// Consider how to do budget category mapping and overall flow from Mint
 	// Allow for budgeted amounts to be included in report
 	//
@@ -88,14 +89,14 @@ namespace Retire
 
 			BudgetFactory.CreateDaily(BudgetType.Personal_Dining, "Food", 50.00);
 
-			BudgetFactory.CreateMonthly(BudgetType.Digital_Music, "EchoDot", 3.99);
-			BudgetFactory.CreateAnnual(BudgetType.Digital_Music, "AmazonCloud", 24.99, 2);
-			BudgetFactory.CreateMonthly(BudgetType.Digital_Subscription, "Github", 7.00);
-			BudgetFactory.CreateAnnual(BudgetType.Digital_Subscription, "AmazonPrime", 99.00, 12);
+			BudgetFactory.CreateMonthly(BudgetType.Media_Music, "EchoDot", 3.99);
+			BudgetFactory.CreateAnnual(BudgetType.Media_Music, "AmazonCloud", 24.99, 2);
+			BudgetFactory.CreateMonthly(BudgetType.Media_Subscription, "Github", 7.00);
+			BudgetFactory.CreateAnnual(BudgetType.Media_Subscription, "AmazonPrime", 99.00, 12);
 			BudgetFactory.CreateAnnual(BudgetType.Shopping_Subscription, "Costco", 55.00, 3);
-			BudgetFactory.CreateMonthly(BudgetType.Digital_Movies, "Netflix", 10.95);
-			BudgetFactory.CreateMonthly(BudgetType.Digital_Movies, "CBS", 7.95);
-			BudgetFactory.CreateAnnual(BudgetType.Digital_Subscription, "Lastpass", 13.61, 4);
+			BudgetFactory.CreateMonthly(BudgetType.Media_Movies, "Netflix", 10.95);
+			BudgetFactory.CreateMonthly(BudgetType.Media_Movies, "CBS", 7.95);
+			BudgetFactory.CreateAnnual(BudgetType.Media_Subscription, "Lastpass", 13.61, 4);
 			BudgetFactory.CreateWeekly(BudgetType.Personal, "Haircut", 60.00, period:6, start:"Jan 11");
 		    BudgetFactory.CreateWeekly(BudgetType.Income_Unemployment, "WA Unemployment", 681.00, start:"Feb 11", period:1, max:26);
 
