@@ -75,6 +75,15 @@ namespace Retire
 			Assert.That(_budget.MonthlyTotal(1), Is.EqualTo(0.0));
 		}
 
+        [Test]
+        public void CanSupportDailyBudgetEntries()
+        {
+            var entry1 = new BudgetEntryDaily(amount: 50, label: "EveryDay", budgetType: BudgetType.Personal, start: "Jan 1");
+            _budget.AddEntry(entry1);
+            Assert.That(_budget.MonthlyTotal(1), Is.EqualTo(31 * 50.0));
+            Assert.That(_budget.Total, Is.EqualTo(365 * 50.0));
+        }
+
 		[Test]
 		public void CanSupportWeeklyBudgetEntries()
 		{

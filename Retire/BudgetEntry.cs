@@ -167,6 +167,31 @@ namespace Retire
 		}
 	}
 
+    class BudgetEntryDaily : BudgetEntry
+    {
+		private Dictionary<int, double> _monthly = new Dictionary<int, double> {
+			{ 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, {7,0}, {8,0}, {9,0}, {10,0}, {11,0}, {12, 0}};
+        
+		[JsonProperty]
+        private string Start;
+
+        public BudgetEntryDaily(double amount, string label, BudgetType budgetType, string start) : base(amount, label, budgetType)
+        {
+            Start = start;
+
+			var startDay = DateTime.Parse(Start);
+			var lastDate = DateTime.Parse($"Dec 31, {startDay.Year}");  // TODO: Should this really be based of year passed in? Shouldn't the year be stored in the budget?
+			const int dayPeriod = 1;
+			for (DateTime day = startDay; day <= lastDate; day = day.AddDays(dayPeriod))
+				_monthly[day.Month] += Amount;
+		}
+
+		public override double GetMonthEntry(int month)
+		{
+			return ValidMonth(month) ? _monthly[month] : 0.0;
+		}
+    }
+
 	class BudgetEntryWeekly : BudgetEntry
 	{
 		private Dictionary<int, double> _monthly = new Dictionary<int, double> {
@@ -189,7 +214,7 @@ namespace Retire
 			Max = max;
 
 			var startDay = DateTime.Parse(Start);
-            var lastDate = DateTime.Parse($"Dec 31, {startDay.Year}");
+            var lastDate = DateTime.Parse($"Dec 31, {startDay.Year}"); // TODO: Should this really be based of year passed in? Shouldn't the year be stored in the budget?
 			var dayPeriod = Period * 7;
 			var count = 0;
 			for (DateTime day = startDay; day <= lastDate && count++ < Max; day = day.AddDays(dayPeriod))
