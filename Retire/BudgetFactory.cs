@@ -33,9 +33,9 @@ namespace Retire
 			_budget.AddEntry(new BudgetEntryWeekly(amount, label, budgetType, period, start, max));
 		}
 
-        public static void CreateBudget(int year)
+        public static void CreateBudget(int year, string user="")
         {
-            _budget = new Budget(year);
+            _budget = new Budget(year, user);
         }
 
 		public static Budget GetBudget()

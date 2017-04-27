@@ -29,7 +29,7 @@ namespace Retire
 		};
 
         [JsonConstructor]
-        public Budget(string user, int year, List<BudgetEntry> budgetEntries)
+        public Budget(int year, string user, List<BudgetEntry> budgetEntries)
         {
 			User = user;
             Year = year > 0 ? year : DateTime.Now.Year;
@@ -41,15 +41,15 @@ namespace Retire
             Console.WriteLine(_monthlyTotals);
         }
 
-        public Budget(string user, int year) : this(user, year, new List<BudgetEntry>())
+        public Budget(int year, string user) : this(year, user, new List<BudgetEntry>())
         {
 		}
 
-        public Budget(int year) : this("", year)
+        public Budget(int year) : this(year, "")
 		{
 		}
 
-		public Budget(string user) : this(user, 0)
+		public Budget(string user) : this(0, user)
 		{
 		}
 

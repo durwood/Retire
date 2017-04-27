@@ -11,14 +11,32 @@ namespace Retire
 	{
 		public int Month { get; private set; }
 		public int Year { get; private set; }
+        public string User { get; private set; }
+        [JsonIgnore]
+        public string Title { get; private set; }
 
 		[JsonProperty]
 		private Dictionary<BudgetType, double> Entries = new Dictionary<BudgetType, double>();
 
-		public Report(int month, int year)
+		public Report(int month, int year) : this(month, year, "")
+		{
+		}
+
+        [JsonConstructor]
+        public Report(int month, int year, string user)
 		{
 			Month = month;
 			Year = year;
+            User = user;
+            Title = GetTitle();
+        }
+
+		private string GetTitle()
+		{
+            var title = $"{Year}_{Month:D2}_report";
+			if (!string.IsNullOrWhiteSpace(User))
+				title = $"{User}_{title}";
+			return title;
 		}
 
 		internal void AddExpenditure(BudgetType type, double amount)
@@ -63,7 +81,7 @@ namespace Retire
             if (!string.IsNullOrWhiteSpace(location))
                 directory = Path.Combine(directory, location);
             
-            var fname = $"{Year}_{Month:D2}_report.json";
+            var fname = $"{Title}.json";
             var fullpath = Path.Combine(directory, fname);
 			File.WriteAllText(fullpath, Serialize());
 		}

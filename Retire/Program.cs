@@ -8,24 +8,60 @@ namespace Retire
 	// DONE Add year to report heading i.e 2/2017
 	// DONE Allow for Income details to be saved
 	// DONE Add Income to budget (support weekly income, too?)
+    // Create Daily Entry?
 	// Consider how to do budget category mapping and overall flow from Mint
 	// Allow for budgeted amounts to be included in report
 	//
 
 	class MainClass
 	{
-		public static void Main(string[] args)
-		{
-			// PrintSpecialFolders();
+        public class ArgParser
+        {
+            private string[] _args;
+            public int Year;
+            public string User;
 
-            var year = 2017;
-            var budget = CreateBudget(year);
-			budget.Save();
-			Console.WriteLine(budget);
+            public ArgParser(string[] args)
+            {
+                _args = args;
+            }
 
-			var report = DoMonthlyReport(year);
-			report.Save();
-		}
+            public bool Parse()
+            {
+                if (_args.Length == 2)
+                {
+                    User = _args[0];
+					Year = int.Parse(_args[1]);
+					return true;
+				}
+				PrintUsage();
+				return false;
+            }
+
+            private void PrintUsage()
+            {
+                Console.WriteLine("Retire <user> <year>");
+            }
+
+        }
+
+        public static void Main(string[] args)
+        {
+            // PrintSpecialFolders();
+            var argParser = new ArgParser(args);
+            if (argParser.Parse())
+            {
+                var year = argParser.Year;
+                var user = argParser.User;
+
+                var budget = CreateBudget(year, user);
+                budget.Save();
+
+				var month = GetMonth();
+				var report = DoMonthlyReport(month, year, user);
+                report.Save();
+            }
+        }
 
 		public static void PrintSpecialFolders()
 		{
@@ -35,9 +71,9 @@ namespace Retire
 			}
 		}
 
-		public static Budget CreateBudget(int year)
+		public static Budget CreateBudget(int year, string user)
 		{
-            BudgetFactory.CreateBudget(year);
+            BudgetFactory.CreateBudget(year, user);
 			BudgetFactory.CreateMonthly(BudgetType.Home_Mortgage, "Mortgage", 2000);
 			BudgetFactory.CreateMonthly(BudgetType.Utilities_InternetCable, "Comcast", 242.00);
 			BudgetFactory.CreateMonthly(BudgetType.Utilities_Gas, "Gas", 90.00);
@@ -66,20 +102,21 @@ namespace Retire
 			BudgetFactory.CreateAnnual(BudgetType.Entertainment_SportingEvents, "Mariners", 900.00, 1);
 			BudgetFactory.CreateAnnual(BudgetType.Entertainment_Movies, "SIFF", 600.00, 12);
 
-			BudgetFactory.CreateAnnual(BudgetType.Gift_FamilyFriends, "Christmas", 1600.00, 11);
+			BudgetFactory.CreateAnnual(BudgetType.Gift_FamilyFriends, "Christmas", 1600.00, 12);
 			BudgetFactory.CreateAnnual(BudgetType.Gift_FamilyFriends, "Michelle", 150, 3);
 			BudgetFactory.CreateAnnual(BudgetType.Gift_FamilyFriends, "Chris", 150, 1);
 			BudgetFactory.CreateAnnual(BudgetType.Gift_FamilyFriends, "Thea", 150, 10);
 			BudgetFactory.CreateAnnual(BudgetType.Gift_FamilyFriends, "Dan", 100, 8);
 
 			var budget = BudgetFactory.GetBudget();
+			Console.WriteLine(budget);
+
 			return budget;
 		}
 
-		public static Report DoMonthlyReport(int year)
+		public static Report DoMonthlyReport(int month, int year, string user)
 		{
-			var month = GetMonth();
-			var report = new Report(month, year);
+			var report = new Report(month, year, user);
 
 			AddIncome(report);
 			AddExpenses(report);
@@ -129,20 +166,6 @@ namespace Retire
 				Console.Write($"Invalid Month. Try again{_prompt}");
 			} while (true);
 			return month;
-		}
-
-		private static int GetYear()
-		{
-			int year;
-			Console.Write($"Enter year{_prompt}");
-			do
-			{
-				var input = Console.ReadLine();
-				if (int.TryParse(input, out year) && year > 2000 && year <= DateTime.Now.Year)
-					break;
-				Console.Write($"Invalid Year. Try again{_prompt}");
-			} while (true);
-			return year;
 		}
 
 		private static double GetPromptedAmount(string prompt)
