@@ -22,9 +22,9 @@ namespace Retire
 		public void CanSupportMonthlyBudgetEntries()
 		{
 			_budget.AddEntry(_monthlyEntry);
-			Assert.That(_budget.Total, Is.EqualTo(360.00));
-			Assert.That(_budget.MonthlyTotal(1), Is.EqualTo(30.00));
-			Assert.That(_budget.MonthlyTotal(12), Is.EqualTo(30.00));
+			Assert.That(_budget.Expenses, Is.EqualTo(360.00));
+			Assert.That(_budget.MonthlyExpenses(1), Is.EqualTo(30.00));
+			Assert.That(_budget.MonthlyExpenses(12), Is.EqualTo(30.00));
 		}
 
 		[Test]
@@ -34,8 +34,8 @@ namespace Retire
 
 			_budget.AddEntry(_monthlyEntry);
 			_budget.AddEntry(anotherMonthly);
-			Assert.That(_budget.Total, Is.EqualTo((30.00 + 25.00) * 12));
-			Assert.That(_budget.MonthlyTotal(3), Is.EqualTo(30.00 + 25.00));
+			Assert.That(_budget.Expenses, Is.EqualTo((30.00 + 25.00) * 12));
+			Assert.That(_budget.MonthlyExpenses(3), Is.EqualTo(30.00 + 25.00));
 		}
 
 		[Test]
@@ -44,9 +44,9 @@ namespace Retire
 			var _biMonthlyEntry = new BudgetEntryBiMonthly(40.00, 1, "Water Bill", BudgetType.Utilities_WaterSewerWaste);
 
 			_budget.AddEntry(_biMonthlyEntry);
-			Assert.That(_budget.Total, Is.EqualTo(40.00 * 6));
-			Assert.That(_budget.MonthlyTotal(1), Is.EqualTo(40.00));
-			Assert.That(_budget.MonthlyTotal(2), Is.EqualTo(0.00));
+			Assert.That(_budget.Expenses, Is.EqualTo(40.00 * 6));
+			Assert.That(_budget.MonthlyExpenses(1), Is.EqualTo(40.00));
+			Assert.That(_budget.MonthlyExpenses(2), Is.EqualTo(0.00));
 		}
 
 		[Test]
@@ -54,9 +54,9 @@ namespace Retire
 		{
 			var anualEntry = new BudgetEntryAnnual(900.00, 1, "Mariners", BudgetType.Entertainment_SportingEvents);
 			_budget.AddEntry(anualEntry);
-			Assert.That(_budget.Total, Is.EqualTo(900.00));
-			Assert.That(_budget.MonthlyTotal(1), Is.EqualTo(900.00));
-			Assert.That(_budget.MonthlyTotal(2), Is.EqualTo(0.0));
+			Assert.That(_budget.Expenses, Is.EqualTo(900.00));
+			Assert.That(_budget.MonthlyExpenses(1), Is.EqualTo(900.00));
+			Assert.That(_budget.MonthlyExpenses(2), Is.EqualTo(0.0));
 		}
 
 		[Test]
@@ -65,14 +65,14 @@ namespace Retire
 			var entry1 = new BudgetEntryBiAnnual(300, 5, "Progressive BMW", BudgetType.Auto_Insurance);
 			var entry2 = new BudgetEntryBiAnnual(100, 12, "Vespa", BudgetType.Auto_Insurance);
 			_budget.AddEntry(entry1);
-			Assert.That(_budget.Total, Is.EqualTo(600.00));
-			Assert.That(_budget.MonthlyTotal(5), Is.EqualTo(300.00));
-			Assert.That(_budget.MonthlyTotal(11), Is.EqualTo(300.0));
-			Assert.That(_budget.MonthlyTotal(12), Is.EqualTo(0.0));
+			Assert.That(_budget.Expenses, Is.EqualTo(600.00));
+			Assert.That(_budget.MonthlyExpenses(5), Is.EqualTo(300.00));
+			Assert.That(_budget.MonthlyExpenses(11), Is.EqualTo(300.0));
+			Assert.That(_budget.MonthlyExpenses(12), Is.EqualTo(0.0));
 			_budget.AddEntry(entry2);
-			Assert.That(_budget.MonthlyTotal(6), Is.EqualTo(100.0));
-			Assert.That(_budget.MonthlyTotal(12), Is.EqualTo(100.0));
-			Assert.That(_budget.MonthlyTotal(1), Is.EqualTo(0.0));
+			Assert.That(_budget.MonthlyExpenses(6), Is.EqualTo(100.0));
+			Assert.That(_budget.MonthlyExpenses(12), Is.EqualTo(100.0));
+			Assert.That(_budget.MonthlyExpenses(1), Is.EqualTo(0.0));
 		}
 
         [Test]
@@ -80,8 +80,8 @@ namespace Retire
         {
             var entry1 = new BudgetEntryDaily(amount: 50, label: "EveryDay", budgetType: BudgetType.Personal, start: "Jan 1");
             _budget.AddEntry(entry1);
-            Assert.That(_budget.MonthlyTotal(1), Is.EqualTo(31 * 50.0));
-            Assert.That(_budget.Total, Is.EqualTo(365 * 50.0));
+            Assert.That(_budget.MonthlyExpenses(1), Is.EqualTo(31 * 50.0));
+            Assert.That(_budget.Expenses, Is.EqualTo(365 * 50.0));
         }
 
 		[Test]
@@ -89,9 +89,9 @@ namespace Retire
 		{
 			var entry1 = new BudgetEntryWeekly(100, "EveryWeek", budgetType: BudgetType.Personal, period:1, start:"Jan 4");
 			_budget.AddEntry(entry1);
-			Assert.That(_budget.MonthlyTotal(1), Is.EqualTo(400));
-			Assert.That(_budget.MonthlyTotal(2), Is.EqualTo(400));
-			Assert.That(_budget.Total, Is.EqualTo(5200));
+			Assert.That(_budget.MonthlyExpenses(1), Is.EqualTo(400));
+			Assert.That(_budget.MonthlyExpenses(2), Is.EqualTo(400));
+			Assert.That(_budget.Expenses, Is.EqualTo(5200));
 		}
 
 		[Test]
@@ -99,10 +99,10 @@ namespace Retire
 		{
 			var entry1 = new BudgetEntryWeekly(681, "WA Unemployment", BudgetType.Income_Unemployment, start: "Feb 11", period: 1, max: 1);
 			_budget.AddEntry(entry1);
-			Assert.That(_budget.MonthlyTotal(1), Is.EqualTo(0.0));
-			Assert.That(_budget.MonthlyTotal(2), Is.EqualTo(681.00));
-			Assert.That(_budget.MonthlyTotal(3), Is.EqualTo(0.0));
-			Assert.That(_budget.Total, Is.EqualTo(681.00));
+			Assert.That(_budget.MonthlyIncome(1), Is.EqualTo(0.0));
+			Assert.That(_budget.MonthlyIncome(2), Is.EqualTo(681.00));
+			Assert.That(_budget.MonthlyIncome(3), Is.EqualTo(0.0));
+			Assert.That(_budget.TotalIncome, Is.EqualTo(681.00));
 		}
 
 		[Test]
@@ -119,7 +119,7 @@ namespace Retire
 			Assert.That(_budget.MonthlyTotal(7), Is.EqualTo(5 * 681.00));
 			Assert.That(_budget.MonthlyTotal(8), Is.EqualTo(1 * 681.00));
 			Assert.That(_budget.MonthlyTotal(9), Is.EqualTo(0.0));
-			Assert.That(_budget.Total, Is.EqualTo(17706));
+			Assert.That(_budget.TotalIncome, Is.EqualTo(17706));
 		}
 
 
@@ -192,19 +192,19 @@ namespace Retire
 			_budget.AddEntry(entry1);
 			var budget = _budget;
 
-			Assert.That(budget.Total, Is.EqualTo(520.00));
-			Assert.That(budget.MonthlyTotal(1), Is.EqualTo(40.00));
-			Assert.That(budget.MonthlyTotal(2), Is.EqualTo(40.00));
-			Assert.That(budget.MonthlyTotal(3), Is.EqualTo(50.00));
-			Assert.That(budget.MonthlyTotal(4), Is.EqualTo(40.00));
-			Assert.That(budget.MonthlyTotal(5), Is.EqualTo(50.00));
-			Assert.That(budget.MonthlyTotal(6), Is.EqualTo(40.00));
-			Assert.That(budget.MonthlyTotal(7), Is.EqualTo(40.00));
-			Assert.That(budget.MonthlyTotal(8), Is.EqualTo(50.00));
-			Assert.That(budget.MonthlyTotal(9), Is.EqualTo(40.00));
-			Assert.That(budget.MonthlyTotal(10), Is.EqualTo(40.00));
-			Assert.That(budget.MonthlyTotal(11), Is.EqualTo(50.00));
-			Assert.That(budget.MonthlyTotal(12), Is.EqualTo(40.00));
+			Assert.That(budget.Expenses, Is.EqualTo(520.00));
+			Assert.That(budget.MonthlyExpenses(1), Is.EqualTo(40.00));
+			Assert.That(budget.MonthlyExpenses(2), Is.EqualTo(40.00));
+			Assert.That(budget.MonthlyExpenses(3), Is.EqualTo(50.00));
+			Assert.That(budget.MonthlyExpenses(4), Is.EqualTo(40.00));
+			Assert.That(budget.MonthlyExpenses(5), Is.EqualTo(50.00));
+			Assert.That(budget.MonthlyExpenses(6), Is.EqualTo(40.00));
+			Assert.That(budget.MonthlyExpenses(7), Is.EqualTo(40.00));
+			Assert.That(budget.MonthlyExpenses(8), Is.EqualTo(50.00));
+			Assert.That(budget.MonthlyExpenses(9), Is.EqualTo(40.00));
+			Assert.That(budget.MonthlyExpenses(10), Is.EqualTo(40.00));
+			Assert.That(budget.MonthlyExpenses(11), Is.EqualTo(50.00));
+			Assert.That(budget.MonthlyExpenses(12), Is.EqualTo(40.00));
 		}
 
         [Test]
@@ -214,9 +214,9 @@ namespace Retire
 			_budget.AddEntry(entry1);
 			var budget = _budget;
 
-			Assert.That(budget.Total, Is.EqualTo(60.00));
-			Assert.That(budget.MonthlyTotal(1), Is.EqualTo(40.00));
-			Assert.That(budget.MonthlyTotal(2), Is.EqualTo(20.00));
+			Assert.That(budget.Expenses, Is.EqualTo(60.00));
+			Assert.That(budget.MonthlyExpenses(1), Is.EqualTo(40.00));
+			Assert.That(budget.MonthlyExpenses(2), Is.EqualTo(20.00));
         }
 
         [Test]
@@ -226,12 +226,31 @@ namespace Retire
 			_budget.AddEntry(entry1);
 			var budget = _budget;
 
-			Assert.That(budget.Total, Is.EqualTo(120.00));
-			Assert.That(budget.MonthlyTotal(9), Is.EqualTo(0.00));
-			Assert.That(budget.MonthlyTotal(10), Is.EqualTo(30.00));
-			Assert.That(budget.MonthlyTotal(11), Is.EqualTo(50.00));
-			Assert.That(budget.MonthlyTotal(12), Is.EqualTo(40.00));
-            Assert.That(budget.MonthlyTotal(1), Is.EqualTo(0.00));
+			Assert.That(budget.Expenses, Is.EqualTo(120.00));
+			Assert.That(budget.MonthlyExpenses(9), Is.EqualTo(0.00));
+			Assert.That(budget.MonthlyExpenses(10), Is.EqualTo(30.00));
+			Assert.That(budget.MonthlyExpenses(11), Is.EqualTo(50.00));
+			Assert.That(budget.MonthlyExpenses(12), Is.EqualTo(40.00));
+            Assert.That(budget.MonthlyExpenses(1), Is.EqualTo(0.00));
 		}
-}
+
+        [Test]
+        public void CanGetExpenseAndIncomeTotal()
+        {
+            _budget.AddEntry(new BudgetEntryMonthly(2000.0, "mortgage", BudgetType.Home_Mortgage));
+            _budget.AddEntry(new BudgetEntryMonthly(200.0, "tv", BudgetType.Utilities_InternetCable));
+            _budget.AddEntry(new BudgetEntryMonthly(3000.0, "income", BudgetType.Income_Salary));
+            _budget.AddEntry(new BudgetEntryMonthly(500.0, "airbnb", BudgetType.Income_Airbnb));
+            const double monthlyIncome = 3000 + 500;
+            const double monthlyExpenses = 2000 + 200;
+            const double monthlyNet = monthlyIncome - monthlyExpenses;
+            Assert.That(_budget.MonthlyExpenses(2), Is.EqualTo(monthlyExpenses));
+            Assert.That(_budget.Expenses, Is.EqualTo(12.0 * monthlyExpenses));
+            Assert.That(_budget.MonthlyIncome(2), Is.EqualTo(monthlyIncome));
+            Assert.That(_budget.TotalIncome, Is.EqualTo(12.0 * monthlyIncome));
+            Assert.That(_budget.MonthlyTotal(2), Is.EqualTo(monthlyNet));
+            Assert.That(_budget.Total, Is.EqualTo(12.0 * monthlyNet));
+        }
+
+    }
 }

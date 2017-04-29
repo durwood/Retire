@@ -16,11 +16,20 @@ namespace Retire
         public string Title { get; private set; }
         [JsonIgnore]
         public double Total { get; private set; }
+        [JsonIgnore]
+        public double Expenses { get; private set; }
+		[JsonIgnore]
+		public double TotalIncome { get; private set; }
 
-        [JsonProperty]
+		[JsonProperty]
         List<BudgetEntry> BudgetEntries = new List<BudgetEntry>();
 
         Dictionary<int, double> _monthlyTotals = new Dictionary<int, double>();
+        Dictionary<int, double> _monthlyExpenses = new Dictionary<int, double> {
+			{ 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, {7,0}, {8,0}, {9,0}, {10,0}, {11,0}, {12, 0}};
+		Dictionary<int, double> _monthlyIncome = new Dictionary<int, double> {
+			{ 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, {7,0}, {8,0}, {9,0}, {10,0}, {11,0}, {12, 0}};
+
 
 		private static JsonSerializerSettings _jsonSettings = new JsonSerializerSettings
 		{
@@ -34,7 +43,7 @@ namespace Retire
 			User = user;
             Year = year > 0 ? year : DateTime.Now.Year;
             Title = this.GetTitle();
-			for (int ii = 1; ii <= 12; ++ii)
+			for (int ii = 1; ii <= 12; ++ii)  // TODO: refactor
 				_monthlyTotals.Add(ii, 0.0);
 			foreach (var entry in budgetEntries)
                 AddEntry(entry);
@@ -69,8 +78,20 @@ namespace Retire
             for (int ii = 1; ii <= 12; ++ii)
             {
                 var monthlyEntry = budgetEntry.GetMonthEntry(ii);
-                _monthlyTotals[ii] += monthlyEntry;
-                Total += monthlyEntry;
+                if (BudgetCategory.IsIncome(budgetEntry.BudgetType))
+                {
+                    _monthlyIncome[ii] += monthlyEntry;
+                    TotalIncome += monthlyEntry;
+                    _monthlyTotals[ii] += monthlyEntry;
+                    Total += monthlyEntry;
+                }
+                else
+                {
+                    _monthlyExpenses[ii] += monthlyEntry;
+                    Expenses += monthlyEntry;
+                    _monthlyTotals[ii] -= monthlyEntry;
+                    Total -= monthlyEntry;
+                }
             }
         }
 
@@ -79,7 +100,17 @@ namespace Retire
             return _monthlyTotals[month];
         }
 
-        public override string ToString()
+        public double MonthlyExpenses(int month)
+        {
+            return _monthlyExpenses[month];
+        }
+
+        public double MonthlyIncome(int month)
+        {
+            return _monthlyIncome[month];
+        }
+
+		public override string ToString()
         {
             var sb = new StringBuilder();
             sb.AppendLine($"{Title}");
