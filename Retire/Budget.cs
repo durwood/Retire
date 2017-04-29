@@ -15,7 +15,7 @@ namespace Retire
         [JsonIgnore]
         public string Title { get; private set; }
         [JsonIgnore]
-        public double TotalNet { get; private set; }
+        public double TotalNet { get{ return TotalIncome - TotalExpenses; } }
         [JsonIgnore]
         public double TotalExpenses { get; private set; }
 		[JsonIgnore]
@@ -24,8 +24,6 @@ namespace Retire
 		[JsonProperty]
         List<BudgetEntry> BudgetEntries = new List<BudgetEntry>();
 
-		Dictionary<int, double> _monthlyTotals = new Dictionary<int, double>{
-			{ 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, {7,0}, {8,0}, {9,0}, {10,0}, {11,0}, {12, 0}};
         Dictionary<int, double> _monthlyExpenses = new Dictionary<int, double> {
 			{ 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, {7,0}, {8,0}, {9,0}, {10,0}, {11,0}, {12, 0}};
 		Dictionary<int, double> _monthlyIncome = new Dictionary<int, double> {
@@ -46,7 +44,6 @@ namespace Retire
             Title = this.GetTitle();
 			foreach (var entry in budgetEntries)
                 AddEntry(entry);
-            Console.WriteLine(_monthlyTotals);
         }
 
         public Budget(int year, string user) : this(year, user, new List<BudgetEntry>())
@@ -80,23 +77,19 @@ namespace Retire
                 if (BudgetCategory.IsIncome(budgetEntry.BudgetType))
                 {
                     _monthlyIncome[ii] += monthlyEntry;
-                    TotalIncome += monthlyEntry;
-                    _monthlyTotals[ii] += monthlyEntry;
-                    TotalNet += monthlyEntry;
-                }
+					TotalIncome += monthlyEntry;
+				}
                 else
                 {
                     _monthlyExpenses[ii] += monthlyEntry;
-                    TotalExpenses += monthlyEntry;
-                    _monthlyTotals[ii] -= monthlyEntry;
-                    TotalNet -= monthlyEntry;
-                }
+					TotalExpenses += monthlyEntry;
+				}
             }
         }
 
         public double MonthlyTotal(int month)
         {
-            return _monthlyTotals[month];
+            return _monthlyIncome[month] - _monthlyExpenses[month];
         }
 
         public double MonthlyExpenses(int month)
