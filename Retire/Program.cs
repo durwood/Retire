@@ -10,7 +10,8 @@ namespace Retire
 	// DONE Add Income to budget (support weekly income, too?)
     // DONE Create Daily Entry?
     // DONE Build out Report functionality a bit by adding Expenses and Income query
-    // Build out Budget functionality by separating Expenses and Income
+    // DONE Build out Budget functionality by separating Expenses and Income
+    // DONE Modify Budget output to show both Income and Expenses.
 	// Consider how to do budget category mapping and overall flow from Mint
 	// Allow for budgeted amounts to be included in report
 	//

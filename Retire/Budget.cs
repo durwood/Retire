@@ -105,13 +105,14 @@ namespace Retire
 		public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"{Title}");
-            for (int ii = 1; ii <= 12; ++ii)
+            sb.AppendLine($"{Title,40}");
+			sb.AppendLine($"{"",7} {"Income",13} {"Expenses",13} {"Net",13}");
+			for (int ii = 1; ii <= 12; ++ii)
             {
                 var month = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(ii); // .GetMonthName(ii);
-                sb.AppendLine($"{month,6}: {MonthlyTotal(ii),10:C2}");
+                sb.AppendLine($"{month,6}: {MonthlyIncome(ii),13:C2} {MonthlyExpenses(ii),13:C2} {MonthlyTotal(ii),13:C2}");
             }
-            sb.AppendLine($"{"Total",6}: {TotalNet,10:C2}");
+            sb.AppendLine($"{"Total",6}: {TotalIncome,13:C2} {TotalExpenses,13:C2} {TotalNet,13:C2}");
             return sb.ToString();
         }
 
