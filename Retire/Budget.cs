@@ -15,16 +15,17 @@ namespace Retire
         [JsonIgnore]
         public string Title { get; private set; }
         [JsonIgnore]
-        public double Total { get; private set; }
+        public double TotalNet { get; private set; }
         [JsonIgnore]
-        public double Expenses { get; private set; }
+        public double TotalExpenses { get; private set; }
 		[JsonIgnore]
 		public double TotalIncome { get; private set; }
 
 		[JsonProperty]
         List<BudgetEntry> BudgetEntries = new List<BudgetEntry>();
 
-        Dictionary<int, double> _monthlyTotals = new Dictionary<int, double>();
+		Dictionary<int, double> _monthlyTotals = new Dictionary<int, double>{
+			{ 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, {7,0}, {8,0}, {9,0}, {10,0}, {11,0}, {12, 0}};
         Dictionary<int, double> _monthlyExpenses = new Dictionary<int, double> {
 			{ 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, {7,0}, {8,0}, {9,0}, {10,0}, {11,0}, {12, 0}};
 		Dictionary<int, double> _monthlyIncome = new Dictionary<int, double> {
@@ -43,8 +44,6 @@ namespace Retire
 			User = user;
             Year = year > 0 ? year : DateTime.Now.Year;
             Title = this.GetTitle();
-			for (int ii = 1; ii <= 12; ++ii)  // TODO: refactor
-				_monthlyTotals.Add(ii, 0.0);
 			foreach (var entry in budgetEntries)
                 AddEntry(entry);
             Console.WriteLine(_monthlyTotals);
@@ -83,14 +82,14 @@ namespace Retire
                     _monthlyIncome[ii] += monthlyEntry;
                     TotalIncome += monthlyEntry;
                     _monthlyTotals[ii] += monthlyEntry;
-                    Total += monthlyEntry;
+                    TotalNet += monthlyEntry;
                 }
                 else
                 {
                     _monthlyExpenses[ii] += monthlyEntry;
-                    Expenses += monthlyEntry;
+                    TotalExpenses += monthlyEntry;
                     _monthlyTotals[ii] -= monthlyEntry;
-                    Total -= monthlyEntry;
+                    TotalNet -= monthlyEntry;
                 }
             }
         }
@@ -119,7 +118,7 @@ namespace Retire
                 var month = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(ii); // .GetMonthName(ii);
                 sb.AppendLine($"{month,6}: {MonthlyTotal(ii),10:C2}");
             }
-            sb.AppendLine($"{"Total",6}: {Total,10:C2}");
+            sb.AppendLine($"{"Total",6}: {TotalNet,10:C2}");
             return sb.ToString();
         }
 
